@@ -19,6 +19,8 @@ struct GLVertex {
 };
 
 struct GLInfo {
+    BOOL recycle_context;
+    BOOL context_initialized;
     HGLRC hRC, hPbufferRC;
     HDC hDC, hPbufferDC;
     HWND hWnd;

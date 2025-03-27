@@ -9,6 +9,7 @@
 #include <glew.h>
 #include <math.h>
 #include <cstdint>
+#include <string>
 #include <core_plugin.h>
 #include "Types.h"
 

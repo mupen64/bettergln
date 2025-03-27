@@ -146,6 +146,10 @@ EXPORT BOOL CALL InitiateGFX(core_gfx_info Gfx_Info)
     hStatusBar = (HWND)Gfx_Info.statusbar_hwnd;
     hToolBar = NULL;
 
+    // If the mupen window has CS_OWNDC, we can recycle one DC for wgl and avoid recreating the context when resetting
+    const ULONG_PTR class_style = GetClassLongPtr(hWnd, GCL_STYLE);
+    OGL.recycle_context = (class_style & CS_OWNDC) != 0;
+
     EnumChildWindows(hWnd, FindToolBarProc, 0);
 
     DMEM = Gfx_Info.dmem;

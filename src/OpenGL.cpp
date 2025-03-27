@@ -9,7 +9,7 @@
 #include "Combiner.h"
 #include "VI.h"
 
-GLInfo OGL;
+GLInfo OGL{};
 
 void* gCapturedPixels; // pointer to buffer to fill
 
@@ -178,7 +178,7 @@ void OGL_ResizeWindow()
     }
 }
 
-bool OGL_Start()
+bool OGL_InitContext()
 {
     int pixelFormat;
 
@@ -208,7 +208,7 @@ bool OGL_Start()
         MessageBox(hWnd, "Error while getting a device context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         return FALSE;
     }
-
+    
     if ((pixelFormat = ChoosePixelFormat(OGL.hDC, &pfd)) == 0)
     {
         MessageBox(hWnd, "Unable to find a suitable pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
@@ -235,9 +235,44 @@ bool OGL_Start()
         OGL_Stop();
         return FALSE;
     }
+
     OGL_InitExtensions();
     OGL_InitStates();
+}
 
+bool OGL_DestroyContext()
+{
+    wglMakeCurrent(NULL, NULL);
+
+    if (OGL.hRC)
+    {
+        wglDeleteContext(OGL.hRC);
+        OGL.hRC = NULL;
+    }
+
+    if (OGL.hDC)
+    {
+        ReleaseDC(hWnd, OGL.hDC);
+        OGL.hDC = NULL;
+    }
+
+    return TRUE;
+}
+
+bool OGL_Start()
+{
+    
+    if (OGL.recycle_context)
+    {
+        if (!OGL.context_initialized)
+        {
+            OGL_InitContext();
+        }
+    } else
+    {
+        OGL_InitContext();
+    }
+    
     TextureCache_Init();
     FrameBuffer_Init();
     Combiner_Init();
@@ -257,18 +292,14 @@ void OGL_Stop()
     FrameBuffer_Destroy();
     TextureCache_Destroy();
 
-    wglMakeCurrent(NULL, NULL);
-
-    if (OGL.hRC)
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glFinish();
+    SwapBuffers(OGL.hDC);
+    
+    if (!OGL.recycle_context)
     {
-        wglDeleteContext(OGL.hRC);
-        OGL.hRC = NULL;
-    }
-
-    if (OGL.hDC)
-    {
-        ReleaseDC(hWnd, OGL.hDC);
-        OGL.hDC = NULL;
+        OGL_DestroyContext();
     }
 }
 
