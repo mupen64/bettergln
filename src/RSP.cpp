@@ -64,49 +64,47 @@ void RSP_LoadMatrix(f32 mtx[4][4], u32 address)
     }
 }
 
-DWORD WINAPI RSP_ThreadProc(LPVOID lpParameter)
+DWORD WINAPI RSP_ThreadProc(LPVOID)
 {
-    RSP_Init();
-
     SetEvent(RSP.threadFinished);
-#ifndef _DEBUG
     __try
     {
-#endif
         while (TRUE)
         {
-            switch (WaitForMultipleObjects(7, RSP.threadMsg, FALSE, INFINITE))
+            switch (WaitForMultipleObjects(std::size(RSP.threadMsg), RSP.threadMsg, FALSE, INFINITE))
             {
-            case (WAIT_OBJECT_0 + RSPMSG_PROCESSDLIST):
+            case WAIT_OBJECT_0 + RSPMSG_CLOSE:
+                OGL_Stop();
+                break;
+            case WAIT_OBJECT_0 + RSPMSG_START:
+                RSP_Init();
+                break;
+            case WAIT_OBJECT_0 + RSPMSG_PROCESSDLIST:
                 RSP_ProcessDList();
                 break;
-            case (WAIT_OBJECT_0 + RSPMSG_UPDATESCREEN):
+            case WAIT_OBJECT_0 + RSPMSG_UPDATESCREEN:
                 VI_UpdateScreen();
                 break;
-            case (WAIT_OBJECT_0 + RSPMSG_CLOSE):
-                OGL_Stop();
-                SetEvent(RSP.threadFinished);
-                return 1;
-            case (WAIT_OBJECT_0 + RSPMSG_DESTROYTEXTURES):
+            case WAIT_OBJECT_0 + RSPMSG_DESTROYTEXTURES:
                 Combiner_Destroy();
                 FrameBuffer_Destroy();
                 TextureCache_Destroy();
                 break;
-            case (WAIT_OBJECT_0 + RSPMSG_INITTEXTURES):
+            case WAIT_OBJECT_0 + RSPMSG_INITTEXTURES:
                 FrameBuffer_Init();
                 TextureCache_Init();
                 Combiner_Init();
                 gSP.changed = gDP.changed = 0xFFFFFFFF;
                 break;
-            case (WAIT_OBJECT_0 + RSPMSG_CAPTURESCREEN):
+            case WAIT_OBJECT_0 + RSPMSG_CAPTURESCREEN:
                 OGL_SaveScreenshot();
                 break;
-            case (WAIT_OBJECT_0 + RSPMSG_READPIXELS):
+            case WAIT_OBJECT_0 + RSPMSG_READPIXELS:
                 OGL_ReadPixels();
+                break;
             }
             SetEvent(RSP.threadFinished);
         }
-#ifndef _DEBUG
     }
     __except (EXCEPTION_EXECUTE_HANDLER)
     {
@@ -120,7 +118,6 @@ DWORD WINAPI RSP_ThreadProc(LPVOID lpParameter)
         DepthBuffer_Destroy();
         OGL_Stop();
     }
-#endif
     RSP.thread = NULL;
     return 0;
 }
@@ -160,7 +157,7 @@ void RSP_ProcessDList()
     u32 uc_dstart = *(u32*)&DMEM[0x0FD8];
     u32 uc_dsize = *(u32*)&DMEM[0x0FDC];
 
-    if ((uc_start != RSP.uc_start) || (uc_dstart != RSP.uc_dstart))
+    if (uc_start != RSP.uc_start || uc_dstart != RSP.uc_dstart)
         gSPLoadUcodeEx(uc_start, uc_dstart, uc_dsize);
 
     gDPSetAlphaCompare(G_AC_NONE);
@@ -180,7 +177,7 @@ void RSP_ProcessDList()
 
     while (!RSP.halt)
     {
-        if ((RSP.PC[RSP.PCi] + 8) > RDRAMSize)
+        if (RSP.PC[RSP.PCi] + 8 > RDRAMSize)
         {
 #ifdef DEBUG
             switch (Debug.level)

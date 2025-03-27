@@ -19,6 +19,42 @@ LONG windowedExStyle;
 RECT windowedRect;
 HMENU windowedMenu;
 
+bool init_rsp_thread()
+{
+    if (RSP.thread)
+    {
+        SetEvent(RSP.threadMsg[RSPMSG_START]);
+        WaitForSingleObject(RSP.threadFinished, INFINITE);
+        return true;
+    }
+    
+    for (auto& i : RSP.threadMsg)
+    {
+        i = CreateEvent(NULL, FALSE, FALSE, NULL);
+        if (i == nullptr)
+        {
+            MessageBox(hWnd, "Error creating video thread message events.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
+            return false;
+        }
+    }
+
+    RSP.threadFinished = CreateEvent(NULL, FALSE, FALSE, NULL);
+    if (RSP.threadFinished == NULL)
+    {
+        MessageBox(hWnd, "Error creating video thread finished event.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
+        return false;
+    }
+    
+    RSP.halt = FALSE;
+
+    DWORD thread_id;
+    RSP.thread = CreateThread(NULL, 4096, RSP_ThreadProc, NULL, NULL, &thread_id);
+    WaitForSingleObject(RSP.threadFinished, INFINITE);
+
+    SetEvent(RSP.threadMsg[RSPMSG_START]);
+    WaitForSingleObject(RSP.threadFinished, INFINITE);
+}
+
 BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD dwReason, LPVOID lpvReserved)
 {
     hInstance = hinstDLL;
@@ -183,6 +219,11 @@ EXPORT BOOL CALL InitiateGFX(core_gfx_info Gfx_Info)
 
     CheckInterrupts = Gfx_Info.check_interrupts;
 
+    if (!init_rsp_thread())
+    {
+        return FALSE;
+    }
+
     return TRUE;
 }
 
@@ -215,48 +256,12 @@ EXPORT void CALL RomClosed(void)
 
         SetEvent(RSP.threadMsg[RSPMSG_CLOSE]);
         WaitForSingleObject(RSP.threadFinished, INFINITE);
-        for (int i = 0; i < 4; i++)
-            if (RSP.threadMsg[i])
-                CloseHandle(RSP.threadMsg[i]);
-        CloseHandle(RSP.threadFinished);
-        CloseHandle(RSP.thread);
     }
-
-    RSP.thread = NULL;
 }
 
 EXPORT void CALL RomOpen(void)
 {
-    DWORD threadID;
-    int i;
-
-    // Create RSP message events
-    for (i = 0; i < 7; i++)
-    {
-        RSP.threadMsg[i] = CreateEvent(NULL, FALSE, FALSE, NULL);
-        if (RSP.threadMsg[i] == NULL)
-        {
-            MessageBox(hWnd, "Error creating video thread message events, closing video thread...", "glN64 Error", MB_OK | MB_ICONERROR);
-            return;
-        }
-    }
-
-    // Create RSP finished event
-    RSP.threadFinished = CreateEvent(NULL, FALSE, FALSE, NULL);
-    if (RSP.threadFinished == NULL)
-    {
-        MessageBox(hWnd, "Error creating video thread finished event, closing video thread...", "glN64 Error", MB_OK | MB_ICONERROR);
-        return;
-    }
-
-    RSP.thread = CreateThread(NULL, 4096, RSP_ThreadProc, NULL, NULL, &threadID);
-    WaitForSingleObject(RSP.threadFinished, INFINITE);
-
     OGL_ResizeWindow();
-
-#ifdef DEBUG
-    OpenDebugDlg();
-#endif
 }
 
 EXPORT void CALL ShowCFB(void)

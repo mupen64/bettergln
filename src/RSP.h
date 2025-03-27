@@ -8,12 +8,13 @@
 #include "Types.h"
 
 #define RSPMSG_CLOSE 0
-#define RSPMSG_UPDATESCREEN 1
-#define RSPMSG_PROCESSDLIST 2
-#define RSPMSG_CAPTURESCREEN 3
-#define RSPMSG_DESTROYTEXTURES 4
-#define RSPMSG_INITTEXTURES 5
-#define RSPMSG_READPIXELS 6
+#define RSPMSG_START 1
+#define RSPMSG_UPDATESCREEN 2
+#define RSPMSG_PROCESSDLIST 3
+#define RSPMSG_CAPTURESCREEN 4
+#define RSPMSG_DESTROYTEXTURES 5
+#define RSPMSG_INITTEXTURES 6
+#define RSPMSG_READPIXELS 7
 
 using RSPInfo = struct
 {
@@ -22,7 +23,7 @@ using RSPInfo = struct
     u32 PC[18], PCi, busy, halt, close, DList, uc_start, uc_dstart, cmd, nextCmd, count;
 
     // Events for thread messages, see defines at the top, or RSP_Thread
-    HANDLE threadMsg[7];
+    HANDLE threadMsg[8];
     // Event to notify main process that the RSP is finished with what it was doing
     HANDLE threadFinished;
 };
