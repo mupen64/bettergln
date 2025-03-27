@@ -1,19 +1,12 @@
 #include "stdafx.h"
-#include <process.h>
 #include "glN64.h"
-#include "Debug.h"
 #include "OpenGL.h"
 #include "N64.h"
 #include "RSP.h"
-#include "RDP.h"
-#include "VI.h"
 #include "Config.h"
-#include "Textures.h"
-#include "Combiner.h"
 
 HWND hWnd;
 HWND hStatusBar;
-// HWND		hFullscreen;
 HWND hToolBar;
 HINSTANCE hInstance;
 
@@ -43,20 +36,15 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD dwReason, LPVOID lpvReserved)
 EXPORT void CALL CaptureScreen(char* Directory)
 {
     screenDirectory = Directory;
-#ifdef RSPTHREAD
     if (RSP.thread)
     {
         SetEvent(RSP.threadMsg[RSPMSG_CAPTURESCREEN]);
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
-#else
-    OGL_SaveScreenshot();
-#endif
 }
 
 EXPORT void CALL ChangeWindow(void)
 {
-#ifdef RSPTHREAD
     // Textures seem to get corrupted when changing video modes (at least on my Radeon), so destroy them
     SetEvent(RSP.threadMsg[RSPMSG_DESTROYTEXTURES]);
     WaitForSingleObject(RSP.threadFinished, INFINITE);
@@ -121,11 +109,6 @@ EXPORT void CALL ChangeWindow(void)
 
     SetEvent(RSP.threadMsg[RSPMSG_INITTEXTURES]);
     WaitForSingleObject(RSP.threadFinished, INFINITE);
-#endif
-}
-
-EXPORT void CALL CloseDLL(void)
-{
 }
 
 EXPORT void CALL DllAbout(HWND hParent)
@@ -136,14 +119,6 @@ EXPORT void CALL DllAbout(HWND hParent)
 EXPORT void CALL DllConfig(HWND hParent)
 {
     Config_Show(hParent);
-}
-
-EXPORT void CALL DllTest(HWND hParent)
-{
-}
-
-EXPORT void CALL DrawScreen(void)
-{
 }
 
 EXPORT void CALL GetDllInfo(core_plugin_info* PluginInfo)
@@ -213,54 +188,21 @@ EXPORT void CALL MoveScreen(int xpos, int ypos)
 
 EXPORT void CALL ProcessDList(void)
 {
-#ifdef RSPTHREAD
     if (RSP.thread)
     {
         SetEvent(RSP.threadMsg[RSPMSG_PROCESSDLIST]);
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
-#else
-    RSP_ProcessDList();
-#endif
 }
 
 EXPORT void CALL ProcessRDPList(void)
 {
-    //*REG.DPC_CURRENT = *REG.DPC_START;
-    /*	RSP.PCi = 0;
-        RSP.PC[RSP.PCi] = *REG.DPC_CURRENT;
-
-        RSP.halt = FALSE;
-
-        while (RSP.PC[RSP.PCi] < *REG.DPC_END)
-        {
-            RSP.cmd0 = *(DWORD*)&RDRAM[RSP.PC[RSP.PCi]];
-            RSP.cmd1 = *(DWORD*)&RDRAM[RSP.PC[RSP.PCi] + 4];
-            RSP.PC[RSP.PCi] += 8;
-
-    /*		if ((RSP.cmd0 >> 24) == 0xE9)
-            {
-                *REG.MI_INTR |= MI_INTR_DP;
-                CheckInterrupts();
-            }
-            if ((RSP.cmd0 >> 24) == 0xCD)
-                RSP.cmd0 = RSP.cmd0;
-
-            GFXOp[RSP.cmd0 >> 24]();*/
-    //*REG.DPC_CURRENT += 8;
-    //	}
 }
 
 EXPORT void CALL RomClosed(void)
 {
-#ifdef RSPTHREAD
-    int i;
-
     if (RSP.thread)
     {
-        //		if (OGL.fullscreen)
-        //			ChangeWindow();
-
         if (RSP.busy)
         {
             RSP.halt = TRUE;
@@ -269,7 +211,7 @@ EXPORT void CALL RomClosed(void)
 
         SetEvent(RSP.threadMsg[RSPMSG_CLOSE]);
         WaitForSingleObject(RSP.threadFinished, INFINITE);
-        for (i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
             if (RSP.threadMsg[i])
                 CloseHandle(RSP.threadMsg[i]);
         CloseHandle(RSP.threadFinished);
@@ -277,18 +219,10 @@ EXPORT void CALL RomClosed(void)
     }
 
     RSP.thread = NULL;
-#else
-    OGL_Stop();
-#endif
-
-#ifdef DEBUG
-    CloseDebugDlg();
-#endif
 }
 
 EXPORT void CALL RomOpen(void)
 {
-#ifdef RSPTHREAD
     DWORD threadID;
     int i;
 
@@ -313,9 +247,6 @@ EXPORT void CALL RomOpen(void)
 
     RSP.thread = CreateThread(NULL, 4096, RSP_ThreadProc, NULL, NULL, &threadID);
     WaitForSingleObject(RSP.threadFinished, INFINITE);
-#else
-    RSP_Init();
-#endif
 
     OGL_ResizeWindow();
 
@@ -330,15 +261,11 @@ EXPORT void CALL ShowCFB(void)
 
 EXPORT void CALL UpdateScreen(void)
 {
-#ifdef RSPTHREAD
     if (RSP.thread)
     {
         SetEvent(RSP.threadMsg[RSPMSG_UPDATESCREEN]);
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
-#else
-    VI_UpdateScreen();
-#endif
 }
 
 EXPORT void CALL ViStatusChanged(void)

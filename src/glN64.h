@@ -1,8 +1,6 @@
 #ifndef GLN64_H
 #define GLN64_H
 
-#define RSPTHREAD
-
 extern HWND hWnd;
 extern HWND hStatusBar;
 extern HWND hToolBar;
