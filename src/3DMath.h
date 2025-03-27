@@ -42,7 +42,7 @@ inline void CopyMatrix(float m0[4][4], float m1[4][4])
         mov dword ptr [edi+38h], eax
         mov eax, dword ptr [esi+3Ch]
         mov dword ptr [edi+3Ch], eax
-        }
+    }
 }
 
 inline void MultMatrix(float m0[4][4], float m1[4][4])
@@ -115,13 +115,13 @@ inline void MultMatrix(float m0[4][4], float m1[4][4])
         dec cx
         cmp cx, 0
         ja MultMatrix_Loop
-        }
+    }
 }
 
 inline void Transpose3x3Matrix(float mtx[4][4])
 {
     __asm
-        {
+    {
         mov esi, [mtx]
 
         mov eax, dword ptr [esi+04h]
@@ -138,7 +138,7 @@ inline void Transpose3x3Matrix(float mtx[4][4])
         mov ebx, dword ptr [esi+24h]
         mov dword ptr [esi+18h], ebx
         mov dword ptr [esi+24h], eax
-        }
+    }
 }
 
 inline void TransformVertex(float vtx[4], float mtx[4][4]) //, float perspNorm )
@@ -198,7 +198,7 @@ inline void TransformVertex(float vtx[4], float mtx[4][4]) //, float perspNorm )
         fadd dword ptr [ebx+3Ch] //																	vtx2*mtx23+vtx1*mtx13+vtx0*mtx03+mtx33
         //		fmul	dword ptr [perspNorm]	//																	(vtx2*mtx23+vtx1*mtx13+vtx0*mtx03+mtx33)*perspNorm
         fstp dword ptr [esi+0Ch] //
-        }
+    }
 }
 
 inline void TransformVector(float vec[3], float mtx[4][4])
@@ -240,7 +240,7 @@ inline void TransformVector(float vec[3], float mtx[4][4])
         fmulp ST(2), ST //													vec2*mtx22		vec1*mtx12+vec0*mtx02
         fadd //																	vec2*mtx22+vec1*mtx12+vec0*mtx02
         fstp dword ptr [esi+08h] //
-        }
+    }
 }
 
 inline void Normalize(float v[3])
@@ -274,7 +274,7 @@ inline void Normalize(float v[3])
         fstp dword ptr [esi+08h] //																									
         End:
         finit
-        }
+    }
 }
 
 inline void Normalize2D(float v[2])
@@ -296,107 +296,107 @@ inline void Normalize2D(float v[2])
         fmul ST(2), ST //																	v1*(1.0/len)	v0				1.0/len
         fmul //																					v1*(1.0/len)	v0*(1.0/len)
         fstp dword ptr [esi] //																									v1*(1.0/len)
-        fstp dword ptr [esi+04h] //																									
-        }
+        fstp dword ptr [esi+04h] //
+    }
 }
 
 
 /*inline float Determinate4x4( float m[4][4] )
 {
-	float m_2233_3223;
-	float m_2133_3123;
-	float m_2132_3122;
-	float m_2033_3023;
-	float m_2032_3022;
-	float m_2031_3021;
-	float det, ret;
+    float m_2233_3223;
+    float m_2133_3123;
+    float m_2132_3122;
+    float m_2033_3023;
+    float m_2032_3022;
+    float m_2031_3021;
+    float det, ret;
 
-	__asm {
-		mov		esi, dword ptr [m]
-	
-										//	ST(7)			ST(6)			ST(5)			ST(4)			ST(3)			ST(2)			ST(1)			ST
-		fld		dword ptr [esi+20h]		//																													m20
-		fld		dword ptr [esi+30h]		//																									m20				m30
+    __asm {
+        mov		esi, dword ptr [m]
 
-		fld		dword ptr [esi+34h]		//																					m20				m30				m31
-		fmul	ST, ST(2)				//																					m20				m30				m20*m31
-		fld		dword ptr [esi+24h]		//																	m20				m30				m20*m31			m21
-		fmul	ST, ST(2)				//																	m20				m30				m20*m31			m30*m21
-		fsub							//																					m20				m30				m20*m31-m30*m21
-		fstp	dword ptr [m_2031_3021] //																									m20				m30
+                                        //	ST(7)			ST(6)			ST(5)			ST(4)			ST(3)			ST(2)			ST(1)			ST
+        fld		dword ptr [esi+20h]		//																													m20
+        fld		dword ptr [esi+30h]		//																									m20				m30
 
-		fld		dword ptr [esi+38h]		//																					m20				m30				m32
-		fmul	ST, ST(2)				//																					m20				m30				m20*m32
-		fld		dword ptr [esi+28h]		//																	m20				m30				m20*m32			m22
-		fmul	ST, ST(2)				//																	m20				m30				m20*m32			m30*m22
-		fsub							//																					m20				m30				m20*m32-m30*m22
-		fstp	dword ptr [m_2032_3022]	//																									m20				m30
+        fld		dword ptr [esi+34h]		//																					m20				m30				m31
+        fmul	ST, ST(2)				//																					m20				m30				m20*m31
+        fld		dword ptr [esi+24h]		//																	m20				m30				m20*m31			m21
+        fmul	ST, ST(2)				//																	m20				m30				m20*m31			m30*m21
+        fsub							//																					m20				m30				m20*m31-m30*m21
+        fstp	dword ptr [m_2031_3021] //																									m20				m30
 
-		fld		dword ptr [esi+3Ch]		//																					m20				m30				m33
-		fmulp	ST(2), ST				//																									m20*m33			m30
-		fld		dword ptr [esi+2Ch]		//																					m20*m33			m30				m23
-		fmul							//																									m20*m33			m30*m23
-		fsub							//																													m20*m33-m30*m23
-		fstp	dword ptr [m_2033_3023]	//
+        fld		dword ptr [esi+38h]		//																					m20				m30				m32
+        fmul	ST, ST(2)				//																					m20				m30				m20*m32
+        fld		dword ptr [esi+28h]		//																	m20				m30				m20*m32			m22
+        fmul	ST, ST(2)				//																	m20				m30				m20*m32			m30*m22
+        fsub							//																					m20				m30				m20*m32-m30*m22
+        fstp	dword ptr [m_2032_3022]	//																									m20				m30
 
-		fld		dword ptr [esi+24h]		//																													m21
-		fld		dword ptr [esi+34h]		//																									m21				m31
-		fld		dword ptr [esi+38h]		//																					m21				m31				m32
-		fld		dword ptr [esi+28h]		//																	m21				m31				m32				m22
+        fld		dword ptr [esi+3Ch]		//																					m20				m30				m33
+        fmulp	ST(2), ST				//																									m20*m33			m30
+        fld		dword ptr [esi+2Ch]		//																					m20*m33			m30				m23
+        fmul							//																									m20*m33			m30*m23
+        fsub							//																													m20*m33-m30*m23
+        fstp	dword ptr [m_2033_3023]	//
 
-		fld		ST(1)					//													m21				m31				m32				m22				m32
-		fmul	ST, ST(4)				//													m21				m31				m32				m22				m21*m32
-		fld		ST(1)					//									m21				m31				m32				m22				m21*m32			m22
-		fmul	ST, ST(4)				//									m21				m31				m32				m22				m21*m32			m31*m22
-		fsub							//													m21				m31				m32				m22				m21*m32-m31*m22
-		fstp	dword ptr [m_2132_3122] //																	m21				m31				m32				m22
-		
-		fld		dword ptr [esi+3Ch]		//													m21				m31				m32				m22				m33
-		fxch	ST(1), ST				//													m21				m31				m32				m33				m22
-		fmul	ST, ST(1)				//													m21				m31				m32				m33				m22*m33
-		fld		dword ptr [esi+2Ch]		//									m21				m31				m32				m33				m22*m33			m23
-		fxch	ST(3), ST				//									m21				m31				m23				m33				m22*m33			m32
-		fmul	ST, ST(3)				//									m21				m31				m23				m33				m22*m33			m32*m23
-		fsub							//													m21				m31				m23				m33				m22*m33-m32*m23
-		fstp	dword ptr [m_2233_3223] //																	m21				m31				m23				m33
-		
-		fmulp	ST(3), ST				//																					m21*m33			m31				m23
-		fmul							//																									m21*m33			m31*m23
-		fsub							//																													m21*m33-m31*m23
-		tstp	dword ptr [m_2133_3123] //
+        fld		dword ptr [esi+24h]		//																													m21
+        fld		dword ptr [esi+34h]		//																									m21				m31
+        fld		dword ptr [esi+38h]		//																					m21				m31				m32
+        fld		dword ptr [esi+28h]		//																	m21				m31				m32				m22
 
-		fld0							//																													0.0
-		fld		dword ptr [esi+1Ch]		//																									0.0				m13
-		fld		dword ptr [esi+18h]		//																					0.0				m13				m12
-		fld		dword ptr [m_2233_3223] //																	0.0				m13				m12				m_2233_3223
+        fld		ST(1)					//													m21				m31				m32				m22				m32
+        fmul	ST, ST(4)				//													m21				m31				m32				m22				m21*m32
+        fld		ST(1)					//									m21				m31				m32				m22				m21*m32			m22
+        fmul	ST, ST(4)				//									m21				m31				m32				m22				m21*m32			m31*m22
+        fsub							//													m21				m31				m32				m22				m21*m32-m31*m22
+        fstp	dword ptr [m_2132_3122] //																	m21				m31				m32				m22
 
-		fld		dword ptr [esi+14h]		//													0.0				m13				m12				m_2233_3223		m11
-		fmul	ST, ST(1)				//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223
-		fld		dword ptr [m_2133_3123]	//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223 m_2133_3123
-		fmul	ST, ST(3)				//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223 m12*m_2133_3123
-		fsub							//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123
-		fld		dword ptr [m_2132_3122]	//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123 m_2132_3122
-		fmul	ST, ST(4)				//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123 m13*m_2132_3122
-		fadd							//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123+m13*m_2132_3122=det1
-		fmul	dword ptr [esi]			//													0.0				m13				m12				m_2233_3223		det1*m00=res
-		faddp	ST(4), ST				//																	res				m13				m12				m_2233_3223
+        fld		dword ptr [esi+3Ch]		//													m21				m31				m32				m22				m33
+        fxch	ST(1), ST				//													m21				m31				m32				m33				m22
+        fmul	ST, ST(1)				//													m21				m31				m32				m33				m22*m33
+        fld		dword ptr [esi+2Ch]		//									m21				m31				m32				m33				m22*m33			m23
+        fxch	ST(3), ST				//									m21				m31				m23				m33				m22*m33			m32
+        fmul	ST, ST(3)				//									m21				m31				m23				m33				m22*m33			m32*m23
+        fsub							//													m21				m31				m23				m33				m22*m33-m32*m23
+        fstp	dword ptr [m_2233_3223] //																	m21				m31				m23				m33
+
+        fmulp	ST(3), ST				//																					m21*m33			m31				m23
+        fmul							//																									m21*m33			m31*m23
+        fsub							//																													m21*m33-m31*m23
+        tstp	dword ptr [m_2133_3123] //
+
+        fld0							//																													0.0
+        fld		dword ptr [esi+1Ch]		//																									0.0				m13
+        fld		dword ptr [esi+18h]		//																					0.0				m13				m12
+        fld		dword ptr [m_2233_3223] //																	0.0				m13				m12				m_2233_3223
+
+        fld		dword ptr [esi+14h]		//													0.0				m13				m12				m_2233_3223		m11
+        fmul	ST, ST(1)				//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223
+        fld		dword ptr [m_2133_3123]	//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223 m_2133_3123
+        fmul	ST, ST(3)				//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223 m12*m_2133_3123
+        fsub							//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123
+        fld		dword ptr [m_2132_3122]	//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123 m_2132_3122
+        fmul	ST, ST(4)				//									0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123 m13*m_2132_3122
+        fadd							//													0.0				m13				m12				m_2233_3223		m11*m_2233_3223-m12*m_2133_3123+m13*m_2132_3122=det1
+        fmul	dword ptr [esi]			//													0.0				m13				m12				m_2233_3223		det1*m00=res
+        faddp	ST(4), ST				//																	res				m13				m12				m_2233_3223
 // needs work from here on
-		fmul	dword ptr [esi+10h]		//																	res				m13				m12				m10*m_2233_3223
-		fld		dword ptr [m_2033_3023]	//													res				m13				m12				m10*m_2233_3223	m_2033_3023
-		fxch	ST(2), ST				//													res				m13				m_2033_3023		m10*m_2233_3223	m12
-		fmul	ST, ST(2)				//													res				m13				m_2033_3023		m10*m_2233_3223	m12*m_2033_3023
-		fsub							//																	res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023
-		fld		dword ptr [m_2032_3022]	//													res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023	m_2032_3022
-		fmul	ST, ST(3)				//													res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023	m13*m_2032_3022
-		fadd							//																	res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023+m13*m_2032_3022=det
-		fmul	dword ptr [esi+04h]		//																	res				m13				m_2033_3023		det*m01
-		fsubp	ST(3), ST				//																					res				m13				m_2033_3023
+        fmul	dword ptr [esi+10h]		//																	res				m13				m12				m10*m_2233_3223
+        fld		dword ptr [m_2033_3023]	//													res				m13				m12				m10*m_2233_3223	m_2033_3023
+        fxch	ST(2), ST				//													res				m13				m_2033_3023		m10*m_2233_3223	m12
+        fmul	ST, ST(2)				//													res				m13				m_2033_3023		m10*m_2233_3223	m12*m_2033_3023
+        fsub							//																	res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023
+        fld		dword ptr [m_2032_3022]	//													res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023	m_2032_3022
+        fmul	ST, ST(3)				//													res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023	m13*m_2032_3022
+        fadd							//																	res				m13				m_2033_3023		m10*m_2233_3223-m12*m_2033_3023+m13*m_2032_3022=det
+        fmul	dword ptr [esi+04h]		//																	res				m13				m_2033_3023		det*m01
+        fsubp	ST(3), ST				//																					res				m13				m_2033_3023
 
-		fld		dword ptr [esi+10h]
+        fld		dword ptr [esi+10h]
 
-		det = mr._21 * mr_3244_4234 - mr._22 * mr_3144_4134 + mr._24 * mr_3142_4132;
-		res += mr._13 * det;
-	}
+        det = mr._21 * mr_3244_4234 - mr._22 * mr_3144_4134 + mr._24 * mr_3142_4132;
+        res += mr._13 * det;
+    }
 }*/
 
 inline float DotProduct(float v0[3], float v1[3])
@@ -416,7 +416,7 @@ inline float DotProduct(float v0[3], float v1[3])
         fadd
         fadd
         fstp dword ptr [ebx]
-        }
+    }
     return dot;
 }
 

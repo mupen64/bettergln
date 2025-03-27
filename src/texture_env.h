@@ -1,8 +1,7 @@
 #ifndef TEXTURE_ENV_H
 #define TEXTURE_ENV_H
 
-struct TexEnv
-{
+struct TexEnv {
     GLint mode;
 
     struct

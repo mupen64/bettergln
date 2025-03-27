@@ -11,19 +11,20 @@
 
 GLInfo OGL;
 
-void* gCapturedPixels; //pointer to buffer to fill
+void* gCapturedPixels; // pointer to buffer to fill
 
 void OGL_ReadPixels()
 {
     GLint oldMode;
     glGetIntegerv(GL_READ_BUFFER, &oldMode);
-    //glReadBuffer(GL_FRONT);
+    // glReadBuffer(GL_FRONT);
 
     glReadBuffer(GL_BACK);
     glReadPixels(0, OGL.heightOffset, OGL.width, OGL.height,
                  GL_BGR, GL_UNSIGNED_BYTE, gCapturedPixels);
-    if (GLenum err = glGetError()) printf("%s\n", gluErrorString(err));
-    glReadBuffer(oldMode); //restore old read buffer
+    if (GLenum err = glGetError())
+        printf("%s\n", gluErrorString(err));
+    glReadBuffer(oldMode); // restore old read buffer
 }
 
 void GLAPIENTRY GLErrorHandler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
@@ -119,13 +120,13 @@ void OGL_InitStates()
         for (int j = 0; j < 8; j++)
             for (int k = 0; k < 128; k++)
                 OGL.stipplePattern[i][j][k] = ((i > (rand() >> 10)) << 7) |
-                    ((i > (rand() >> 10)) << 6) |
-                    ((i > (rand() >> 10)) << 5) |
-                    ((i > (rand() >> 10)) << 4) |
-                    ((i > (rand() >> 10)) << 3) |
-                    ((i > (rand() >> 10)) << 2) |
-                    ((i > (rand() >> 10)) << 1) |
-                    ((i > (rand() >> 10)) << 0);
+                ((i > (rand() >> 10)) << 6) |
+                ((i > (rand() >> 10)) << 5) |
+                ((i > (rand() >> 10)) << 4) |
+                ((i > (rand() >> 10)) << 3) |
+                ((i > (rand() >> 10)) << 2) |
+                ((i > (rand() >> 10)) << 1) |
+                ((i > (rand() >> 10)) << 0);
     }
 
     SwapBuffers(wglGetCurrentDC());
@@ -182,24 +183,24 @@ bool OGL_Start()
     int pixelFormat;
 
     PIXELFORMATDESCRIPTOR pfd = {
-        sizeof(PIXELFORMATDESCRIPTOR), // size of this pfd 
-        1, // version number 
-        PFD_DRAW_TO_WINDOW | // support window 
-        PFD_SUPPORT_OPENGL | // support OpenGL 
-        PFD_DOUBLEBUFFER, // double buffered 
-        PFD_TYPE_RGBA, // RGBA type 
-        32, // color depth 
-        0, 0, 0, 0, 0, 0, // color bits ignored 
-        0, // no alpha buffer 
-        0, // shift bit ignored 
-        0, // no accumulation buffer 
-        0, 0, 0, 0, // accum bits ignored 
-        32, // z-buffer     
-        0, // no stencil buffer 
-        0, // no auxiliary buffer 
-        PFD_MAIN_PLANE, // main layer 
-        0, // reserved 
-        0, 0, 0 // layer masks ignored 
+    sizeof(PIXELFORMATDESCRIPTOR), // size of this pfd
+    1, // version number
+    PFD_DRAW_TO_WINDOW | // support window
+    PFD_SUPPORT_OPENGL | // support OpenGL
+    PFD_DOUBLEBUFFER, // double buffered
+    PFD_TYPE_RGBA, // RGBA type
+    32, // color depth
+    0, 0, 0, 0, 0, 0, // color bits ignored
+    0, // no alpha buffer
+    0, // shift bit ignored
+    0, // no accumulation buffer
+    0, 0, 0, 0, // accum bits ignored
+    32, // z-buffer
+    0, // no stencil buffer
+    0, // no auxiliary buffer
+    PFD_MAIN_PLANE, // main layer
+    0, // reserved
+    0, 0, 0 // layer masks ignored
     };
 
     if ((OGL.hDC = GetDC(hWnd)) == NULL)
@@ -244,8 +245,8 @@ bool OGL_Start()
     gSP.changed = gDP.changed = 0xFFFFFFFF;
     OGL_UpdateScale();
 #ifdef _DEBUG
-	printf("OpenGL %s\n", glGetString(GL_VERSION));
-	
+    printf("OpenGL %s\n", glGetString(GL_VERSION));
+
 #endif
     return TRUE;
 }
@@ -290,7 +291,7 @@ void OGL_UpdateViewport()
 {
     glViewport(gSP.viewport.x * OGL.scaleX, (VI.height - (gSP.viewport.y + gSP.viewport.height)) * OGL.scaleY + OGL.heightOffset,
                gSP.viewport.width * OGL.scaleX, gSP.viewport.height * OGL.scaleY);
-    glDepthRange(0.0f, 1.0f); //gSP.viewport.nearz, gSP.viewport.farz );
+    glDepthRange(0.0f, 1.0f); // gSP.viewport.nearz, gSP.viewport.farz );
 }
 
 void OGL_UpdateDepthUpdate()
@@ -502,13 +503,13 @@ void OGL_AddTriangle(SPVertex* vertices, int v0, int v1, int v2)
         OGL.vertices[OGL.numVertices].color.b = vertices[v[i]].b;
         OGL.vertices[OGL.numVertices].color.a = vertices[v[i]].a;
         SetConstant(OGL.vertices[OGL.numVertices].color, combiner.vertex.color, combiner.vertex.alpha);
-        //SetConstant( OGL.vertices[OGL.numVertices].secondaryColor, combiner.vertex.secondaryColor, ONE );
+        // SetConstant( OGL.vertices[OGL.numVertices].secondaryColor, combiner.vertex.secondaryColor, ONE );
 
         if (OGL.EXT_secondary_color)
         {
-            OGL.vertices[OGL.numVertices].secondaryColor.r = 0.0f; //lod_fraction; //vertices[v[i]].r;
-            OGL.vertices[OGL.numVertices].secondaryColor.g = 0.0f; //lod_fraction; //vertices[v[i]].g;
-            OGL.vertices[OGL.numVertices].secondaryColor.b = 0.0f; //lod_fraction; //vertices[v[i]].b;
+            OGL.vertices[OGL.numVertices].secondaryColor.r = 0.0f; // lod_fraction; //vertices[v[i]].r;
+            OGL.vertices[OGL.numVertices].secondaryColor.g = 0.0f; // lod_fraction; //vertices[v[i]].g;
+            OGL.vertices[OGL.numVertices].secondaryColor.b = 0.0f; // lod_fraction; //vertices[v[i]].b;
             OGL.vertices[OGL.numVertices].secondaryColor.a = 1.0f;
             SetConstant(OGL.vertices[OGL.numVertices].secondaryColor, combiner.vertex.secondaryColor, ONE);
         }
@@ -641,25 +642,16 @@ void OGL_DrawRect(int ulx, int uly, int lrx, int lry, float* color)
     glLoadIdentity();
     OGL_UpdateCullFace();
     OGL_UpdateViewport();
-    if (!OGL.ignoreScissor) glEnable(GL_SCISSOR_TEST);
+    if (!OGL.ignoreScissor)
+        glEnable(GL_SCISSOR_TEST);
 }
 
 void OGL_DrawTexturedRect(float ulx, float uly, float lrx, float lry, float uls, float ult, float lrs, float lrt, bool flip)
 {
     GLVertex rect[2] =
     {
-        {
-            ulx, uly, gDP.otherMode.depthSource == G_ZS_PRIM ? gDP.primDepth.z : gSP.viewport.nearz, 1.0f, {
-                /*gDP.blendColor.r, gDP.blendColor.g, gDP.blendColor.b, gDP.blendColor.a */1.0f, 1.0f, 1.0f, 0.0f
-            },
-            {1.0f, 1.0f, 1.0f, 1.0f}, uls, ult, uls, ult, 0.0f
-        },
-        {
-            lrx, lry, gDP.otherMode.depthSource == G_ZS_PRIM ? gDP.primDepth.z : gSP.viewport.nearz, 1.0f, {
-                /*gDP.blendColor.r, gDP.blendColor.g, gDP.blendColor.b, gDP.blendColor.a*/1.0f, 1.0f, 1.0f, 0.0f
-            },
-            {1.0f, 1.0f, 1.0f, 1.0f}, lrs, lrt, lrs, lrt, 0.0f
-        },
+    {ulx, uly, gDP.otherMode.depthSource == G_ZS_PRIM ? gDP.primDepth.z : gSP.viewport.nearz, 1.0f, {/*gDP.blendColor.r, gDP.blendColor.g, gDP.blendColor.b, gDP.blendColor.a */ 1.0f, 1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, uls, ult, uls, ult, 0.0f},
+    {lrx, lry, gDP.otherMode.depthSource == G_ZS_PRIM ? gDP.primDepth.z : gSP.viewport.nearz, 1.0f, {/*gDP.blendColor.r, gDP.blendColor.g, gDP.blendColor.b, gDP.blendColor.a*/ 1.0f, 1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, lrs, lrt, lrs, lrt, 0.0f},
     };
 
     OGL_UpdateStates();
@@ -702,8 +694,8 @@ void OGL_DrawTexturedRect(float ulx, float uly, float lrx, float lry, float uls,
 
         if ((rect[0].s0 >= 0.0f) && (rect[1].s0 <= cache.current[0]->width))
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+        // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+        // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
         if ((rect[0].t0 >= 0.0f) && (rect[1].t0 <= cache.current[0]->height))
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -771,7 +763,7 @@ void OGL_DrawTexturedRect(float ulx, float uly, float lrx, float lry, float uls,
     SetConstant(rect[0].color, combiner.vertex.color, combiner.vertex.alpha);
 
     if (OGL.EXT_secondary_color)
-    SetConstant(rect[0].secondaryColor, combiner.vertex.secondaryColor, combiner.vertex.alpha);
+        SetConstant(rect[0].secondaryColor, combiner.vertex.secondaryColor, combiner.vertex.alpha);
 
     glBegin(GL_QUADS);
     glColor4f(rect[0].color.r, rect[0].color.g, rect[0].color.b, rect[0].color.a);

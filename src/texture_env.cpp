@@ -54,7 +54,7 @@ TexEnv* Compile_texture_env(Combiner* color, Combiner* alpha)
                     texEnv->mode = GL_MODULATE;
                 }
                 else if (((alpha->stage[i].op[j].param1 != TEXEL0_ALPHA) || (alpha->stage[i].op[j].param1 != TEXEL1_ALPHA)) &&
-                    ((alpha->stage[i].op[j - 1].param1 == TEXEL0_ALPHA) || (alpha->stage[i].op[j - 1].param1 == TEXEL1_ALPHA)))
+                         ((alpha->stage[i].op[j - 1].param1 == TEXEL0_ALPHA) || (alpha->stage[i].op[j - 1].param1 == TEXEL1_ALPHA)))
                 {
                     texEnv->fragment.alpha = alpha->stage[i].op[j].param1;
                     texEnv->mode = GL_MODULATE;
@@ -129,7 +129,7 @@ TexEnv* Compile_texture_env(Combiner* color, Combiner* alpha)
             case INTER:
                 if ((color->stage[i].op[j].param1 == TEXEL0) &&
                     ((color->stage[i].op[j].param2 != TEXEL0) && (color->stage[i].op[j].param2 != TEXEL0_ALPHA) &&
-                        (color->stage[i].op[j].param2 != TEXEL1) && (color->stage[i].op[j].param2 != TEXEL1_ALPHA)) &&
+                     (color->stage[i].op[j].param2 != TEXEL1) && (color->stage[i].op[j].param2 != TEXEL1_ALPHA)) &&
                     (color->stage[i].op[j].param3 == TEXEL0_ALPHA))
                 {
                     texEnv->mode = GL_DECAL;
@@ -138,9 +138,9 @@ TexEnv* Compile_texture_env(Combiner* color, Combiner* alpha)
                     texEnv->usesT1 = FALSE;
                 }
                 else if ((color->stage[i].op[j].param1 == TEXEL0) &&
-                    ((color->stage[i].op[j].param2 != TEXEL0) && (color->stage[i].op[j].param2 != TEXEL0_ALPHA) &&
-                        (color->stage[i].op[j].param2 != TEXEL1) && (color->stage[i].op[j].param2 != TEXEL1_ALPHA)) &&
-                    (color->stage[i].op[j].param3 == TEXEL0_ALPHA))
+                         ((color->stage[i].op[j].param2 != TEXEL0) && (color->stage[i].op[j].param2 != TEXEL0_ALPHA) &&
+                          (color->stage[i].op[j].param2 != TEXEL1) && (color->stage[i].op[j].param2 != TEXEL1_ALPHA)) &&
+                         (color->stage[i].op[j].param3 == TEXEL0_ALPHA))
                 {
                     texEnv->mode = GL_DECAL;
                     texEnv->fragment.color = color->stage[i].op[j].param2;

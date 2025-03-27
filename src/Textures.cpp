@@ -15,7 +15,7 @@
 
 TextureCache cache;
 
-using GetTexelFunc = u32(*)(u64* src, u16 x, u16 i, u8 palette);
+using GetTexelFunc = u32 (*)(u64* src, u16 x, u16 i, u8 palette);
 
 inline u32 GetNone(u64* src, u16 x, u16 i, u8 palette)
 {
@@ -187,40 +187,39 @@ const struct
     u32 autoFormat, lineShift, maxTexels;
 } imageFormat[4][5] =
 {
-    //		Get16					glType16						glInternalFormat16	Get32					glType32						glInternalFormat32	autoFormat
-    {
-        // 4-bit
-        {GetCI4RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI4RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 4, 4096}, // CI (Banjo-Kazooie uses this, doesn't make sense, but it works...)
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // YUV
-        {GetCI4RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI4RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 4, 4096}, // CI
-        {GetIA31_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA31_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // IA
-        {GetI4_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetI4_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // I
-    },
-    {
-        // 8-bit
-        {GetCI8RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI8RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 3, 2048}, // RGBA
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 4096}, // YUV
-        {GetCI8RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI8RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 3, 2048}, // CI
-        {GetIA44_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA44_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 3, 4096}, // IA
-        {GetI8_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetI8_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 3, 4096}, // I
-    },
-    {
-        // 16-bit
-        {GetRGBA5551_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetRGBA5551_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 2, 2048}, // RGBA
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 2, 2048}, // YUV
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 2048}, // CI
-        {GetIA88_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA88_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 2, 2048}, // IA
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 2048}, // I
-    },
-    {
-        // 32-bit
-        {GetRGBA8888_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetRGBA8888_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 2, 1024}, // RGBA
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // YUV
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // CI
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // IA
-        {GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // I
-    }
-};
+//		Get16					glType16						glInternalFormat16	Get32					glType32						glInternalFormat32	autoFormat
+{
+// 4-bit
+{GetCI4RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI4RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 4, 4096}, // CI (Banjo-Kazooie uses this, doesn't make sense, but it works...)
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // YUV
+{GetCI4RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI4RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 4, 4096}, // CI
+{GetIA31_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA31_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // IA
+{GetI4_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetI4_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 4, 8192}, // I
+},
+{
+// 8-bit
+{GetCI8RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI8RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 3, 2048}, // RGBA
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 4096}, // YUV
+{GetCI8RGBA_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetCI8RGBA_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 3, 2048}, // CI
+{GetIA44_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA44_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 3, 4096}, // IA
+{GetI8_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetI8_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 3, 4096}, // I
+},
+{
+// 16-bit
+{GetRGBA5551_RGBA5551, GL_UNSIGNED_SHORT_5_5_5_1_EXT, GL_RGB5_A1, GetRGBA5551_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGB5_A1, 2, 2048}, // RGBA
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 2, 2048}, // YUV
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 2048}, // CI
+{GetIA88_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetIA88_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 2, 2048}, // IA
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 2048}, // I
+},
+{
+// 32-bit
+{GetRGBA8888_RGBA4444, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetRGBA8888_RGBA8888, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA8, 2, 1024}, // RGBA
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // YUV
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // CI
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // IA
+{GetNone, GL_UNSIGNED_SHORT_4_4_4_4_EXT, GL_RGBA4, GetNone, GL_UNSIGNED_BYTE, GL_RGBA8, GL_RGBA4, 0, 1024}, // I
+}};
 
 void TextureCache_Init()
 {
@@ -305,7 +304,8 @@ BOOL TextureCache_Verify()
         i++;
         current = current->lower;
     }
-    if (i != cache.numCached) return FALSE;
+    if (i != cache.numCached)
+        return FALSE;
 
     i = 0;
     current = cache.bottom;
@@ -314,7 +314,8 @@ BOOL TextureCache_Verify()
         i++;
         current = current->higher;
     }
-    if (i != cache.numCached) return FALSE;
+    if (i != cache.numCached)
+        return FALSE;
 
     return TRUE;
 }
@@ -409,7 +410,8 @@ CachedTexture* TextureCache_AddTop()
 
 void TextureCache_MoveToTop(CachedTexture* newtop)
 {
-    if (newtop == cache.top) return;
+    if (newtop == cache.top)
+        return;
 
     if (newtop == cache.bottom)
     {
@@ -454,7 +456,8 @@ void TextureCache_LoadBackground(CachedTexture* texInfo)
     GLenum glType;
 
     if (((imageFormat[texInfo->size][texInfo->format].autoFormat == GL_RGBA8) ||
-        ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) && (cache.bitDepth != 0))
+         ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) &&
+        (cache.bitDepth != 0))
     {
         texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
         if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
@@ -524,7 +527,8 @@ void TextureCache_LoadBackground(CachedTexture* texInfo)
 
     if (cache.textureFilter)
     {
-        if (cache.textureFilter == SaI) OGL.filterScale = 2;
+        if (cache.textureFilter == SaI)
+            OGL.filterScale = 2;
         texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
 
         scaledDest = (u32*)malloc(texInfo->textureBytes);
@@ -565,7 +569,8 @@ void TextureCache_Load(CachedTexture* texInfo)
     GLenum glType;
 
     if (((imageFormat[texInfo->size][texInfo->format].autoFormat == GL_RGBA8) ||
-        ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) && (cache.bitDepth != 0))
+         ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) &&
+        (cache.bitDepth != 0))
     {
         texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
         if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
@@ -670,7 +675,8 @@ void TextureCache_Load(CachedTexture* texInfo)
 
     if (cache.textureFilter)
     {
-        if (cache.textureFilter == SaI) OGL.filterScale = 2;
+        if (cache.textureFilter == SaI)
+            OGL.filterScale = 2;
         texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
 
         scaledDest = (u32*)malloc(texInfo->textureBytes);
@@ -764,7 +770,7 @@ void TextureCache_ActivateTexture(u32 t, CachedTexture* texture)
 
 void TextureCache_ActivateDummy(u32 t)
 {
-    //TextureCache_ActivateTexture( t, cache.dummy );
+    // TextureCache_ActivateTexture( t, cache.dummy );
     if (OGL.ARB_multitexture)
         glActiveTextureARB(GL_TEXTURE0_ARB + t);
 
@@ -1083,7 +1089,7 @@ void TextureCache_Update(u32 t)
             cache.current[t]->realWidth = maskWidth << 1;
         else
             cache.current[t]->realWidth = pow2( width );
-    
+
         if (cache.current[t]->clampT)
             cache.current[t]->realHeight = pow2( clampHeight );
         else if (cache.current[t]->mirrorT)
@@ -1111,7 +1117,7 @@ void TextureCache_Update(u32 t)
     cache.current[t]->shiftScaleS = 1.0f;
     cache.current[t]->shiftScaleT = 1.0f;
 
-    cache.current[t]->offsetS = OGL.textureFilter == 1 ? 0.25f : 0.5f; //this needs to change?
+    cache.current[t]->offsetS = OGL.textureFilter == 1 ? 0.25f : 0.5f; // this needs to change?
     cache.current[t]->offsetT = OGL.textureFilter == 1 ? 0.25f : 0.5f;
 
     if (gSP.textureTile[t]->shifts > 10)

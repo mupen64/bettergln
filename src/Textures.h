@@ -1,18 +1,16 @@
 #ifndef TEXTURES_H
 #define TEXTURES_H
 #include <glew.h>
-//#include <gl/gl.h>
+// #include <gl/gl.h>
 #include "convert.h"
 
-enum FILTERS
-{
+enum FILTERS {
     None,
     SaI,
     xBRZ,
 };
 
-struct CachedTexture
-{
+struct CachedTexture {
     GLuint glName;
     u32 address;
     u32 crc;
@@ -41,17 +39,16 @@ struct CachedTexture
 };
 
 
-struct TextureCache
-{
+struct TextureCache {
     CachedTexture *bottom, *top;
 
-    CachedTexture* (current[2]);
+    CachedTexture*(current[2]);
     u32 maxBytes;
     u32 cachedBytes;
     u32 numCached;
     u32 hits, misses;
     GLuint glNoiseNames[32];
-    //GLuint			glDummyName;
+    // GLuint			glDummyName;
     CachedTexture* dummy;
     u32 textureFilter, bitDepth;
 };
@@ -62,7 +59,8 @@ inline u32 pow2(u32 dim)
 {
     u32 i = 1;
 
-    while (i < dim) i <<= 1;
+    while (i < dim)
+        i <<= 1;
 
     return i;
 }

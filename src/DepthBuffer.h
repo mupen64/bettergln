@@ -1,15 +1,13 @@
 #ifndef DEPTHBUFFER_H
 #define DEPTHBUFFER_H
 
-struct DepthBuffer
-{
+struct DepthBuffer {
     DepthBuffer *higher, *lower;
 
     u32 address, cleared;
 };
 
-struct DepthBufferInfo
-{
+struct DepthBufferInfo {
     DepthBuffer *top, *bottom, *current;
     int numBuffers;
 };

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#define CRC32_POLYNOMIAL     0x04C11DB7
+#define CRC32_POLYNOMIAL 0x04C11DB7
 
 unsigned long CRCTable[256];
 

@@ -4,94 +4,94 @@
 #include "texture_env_combine.h"
 
 /*	if ((i == COMBINED) && (OGL.ATIX_texture_env_route)) \
-	{ \
-		envCombiner->color[combinedUnit].outputTexture = GL_TEXTURE0_ARB + n; \
-		envCombiner->color[n].a.source = GL_PRIMARY_COLOR_NV; \
-		envCombiner->color[n].a.operand = GL_SRC_COLOR; \
-	} \
-	else if ((i == LOD_FRACTION) && (envCombiner->vertex.secondaryColor == COMBINED) && (OGL.ATIX_texture_env_route)) \
-	{ \
-		envCombiner->vertex.secondaryColor = LOD_FRACTION; \
-		envCombiner->color[n].a.source = GL_SECONDARY_COLOR_ATIX; \
-		envCombiner->color[n].a.operand = GL_SRC_COLOR; \
-	} \*/
+    { \
+        envCombiner->color[combinedUnit].outputTexture = GL_TEXTURE0_ARB + n; \
+        envCombiner->color[n].a.source = GL_PRIMARY_COLOR_NV; \
+        envCombiner->color[n].a.operand = GL_SRC_COLOR; \
+    } \
+    else if ((i == LOD_FRACTION) && (envCombiner->vertex.secondaryColor == COMBINED) && (OGL.ATIX_texture_env_route)) \
+    { \
+        envCombiner->vertex.secondaryColor = LOD_FRACTION; \
+        envCombiner->color[n].a.source = GL_SECONDARY_COLOR_ATIX; \
+        envCombiner->color[n].a.operand = GL_SRC_COLOR; \
+    } \*/
 
-#define SetColorCombinerArg( n, a, i ) \
- if (TexEnvArgs[i].source == GL_CONSTANT_ARB) \
-	{ \
-		if ((i > 5) && ((envCombiner->alpha[n].constant == COMBINED) || (envCombiner->alpha[n].constant == i))) \
-		{ \
-			envCombiner->alpha[n].constant = i; \
-			envCombiner->color[n].a.source = GL_CONSTANT_ARB; \
-			envCombiner->color[n].a.operand = GL_SRC_ALPHA; \
-		} \
-		else if ((i > 5) && ((envCombiner->vertex.alpha == COMBINED) || (envCombiner->vertex.alpha == i))) \
-		{ \
-			envCombiner->vertex.alpha = i; \
-			envCombiner->color[n].a.source = GL_PRIMARY_COLOR_ARB; \
-			envCombiner->color[n].a.operand = GL_SRC_ALPHA; \
-		} \
-		else if ((envCombiner->color[n].constant == COMBINED) || (envCombiner->color[n].constant == i)) \
-		{ \
-			envCombiner->color[n].constant = i; \
-			envCombiner->color[n].a.source = GL_CONSTANT_ARB; \
-			envCombiner->color[n].a.operand = GL_SRC_COLOR; \
-		} \
-		else if (OGL.ATIX_texture_env_route && ((envCombiner->vertex.secondaryColor == COMBINED) || (envCombiner->vertex.secondaryColor == i))) \
-		{ \
-			envCombiner->vertex.secondaryColor = i; \
-			envCombiner->color[n].a.source = GL_SECONDARY_COLOR_ATIX; \
-			envCombiner->color[n].a.operand = GL_SRC_COLOR; \
-		} \
-		else if ((envCombiner->vertex.color == COMBINED) || (envCombiner->vertex.color == i))\
-		{ \
-			envCombiner->vertex.color = i; \
-			envCombiner->color[n].a.source = GL_PRIMARY_COLOR_ARB; \
-			envCombiner->color[n].a.operand = GL_SRC_COLOR; \
-		} \
-	} \
-	else \
-	{ \
-		envCombiner->color[n].a.source = TexEnvArgs[i].source; \
-		envCombiner->color[n].a.operand = TexEnvArgs[i].operand; \
-	}
+#define SetColorCombinerArg(n, a, i)                                                                                                            \
+    if (TexEnvArgs[i].source == GL_CONSTANT_ARB)                                                                                                \
+    {                                                                                                                                           \
+        if ((i > 5) && ((envCombiner->alpha[n].constant == COMBINED) || (envCombiner->alpha[n].constant == i)))                                 \
+        {                                                                                                                                       \
+            envCombiner->alpha[n].constant = i;                                                                                                 \
+            envCombiner->color[n].a.source = GL_CONSTANT_ARB;                                                                                   \
+            envCombiner->color[n].a.operand = GL_SRC_ALPHA;                                                                                     \
+        }                                                                                                                                       \
+        else if ((i > 5) && ((envCombiner->vertex.alpha == COMBINED) || (envCombiner->vertex.alpha == i)))                                      \
+        {                                                                                                                                       \
+            envCombiner->vertex.alpha = i;                                                                                                      \
+            envCombiner->color[n].a.source = GL_PRIMARY_COLOR_ARB;                                                                              \
+            envCombiner->color[n].a.operand = GL_SRC_ALPHA;                                                                                     \
+        }                                                                                                                                       \
+        else if ((envCombiner->color[n].constant == COMBINED) || (envCombiner->color[n].constant == i))                                         \
+        {                                                                                                                                       \
+            envCombiner->color[n].constant = i;                                                                                                 \
+            envCombiner->color[n].a.source = GL_CONSTANT_ARB;                                                                                   \
+            envCombiner->color[n].a.operand = GL_SRC_COLOR;                                                                                     \
+        }                                                                                                                                       \
+        else if (OGL.ATIX_texture_env_route && ((envCombiner->vertex.secondaryColor == COMBINED) || (envCombiner->vertex.secondaryColor == i))) \
+        {                                                                                                                                       \
+            envCombiner->vertex.secondaryColor = i;                                                                                             \
+            envCombiner->color[n].a.source = GL_SECONDARY_COLOR_ATIX;                                                                           \
+            envCombiner->color[n].a.operand = GL_SRC_COLOR;                                                                                     \
+        }                                                                                                                                       \
+        else if ((envCombiner->vertex.color == COMBINED) || (envCombiner->vertex.color == i))                                                   \
+        {                                                                                                                                       \
+            envCombiner->vertex.color = i;                                                                                                      \
+            envCombiner->color[n].a.source = GL_PRIMARY_COLOR_ARB;                                                                              \
+            envCombiner->color[n].a.operand = GL_SRC_COLOR;                                                                                     \
+        }                                                                                                                                       \
+    }                                                                                                                                           \
+    else                                                                                                                                        \
+    {                                                                                                                                           \
+        envCombiner->color[n].a.source = TexEnvArgs[i].source;                                                                                  \
+        envCombiner->color[n].a.operand = TexEnvArgs[i].operand;                                                                                \
+    }
 
-#define SetColorCombinerValues( n, a, s, o ) \
-	envCombiner->color[n].a.source = s; \
-	envCombiner->color[n].a.operand = o
+#define SetColorCombinerValues(n, a, s, o) \
+    envCombiner->color[n].a.source = s;    \
+    envCombiner->color[n].a.operand = o
 
 /*	if ((TexEnvArgs[i].source == GL_PREVIOUS_ARB) && (OGL.ATIX_texture_env_route)) \
-	{ \
-		envCombiner->alpha[combinedUnit].outputTexture = GL_TEXTURE0_ARB + n; \
-		envCombiner->alpha[n].a.source = GL_TEXTURE0_ARB + n; \
-		envCombiner->alpha[n].a.operand = GL_SRC_ALPHA; \
-	} \
-	else*/
-#define SetAlphaCombinerArg( n, a, i ) \
-	if (TexEnvArgs[i].source == GL_CONSTANT_ARB) \
-	{ \
-		if ((envCombiner->alpha[n].constant == COMBINED) || (envCombiner->alpha[n].constant == i)) \
-		{ \
-			envCombiner->alpha[n].constant = i; \
-			envCombiner->alpha[n].a.source = GL_CONSTANT_ARB; \
-			envCombiner->alpha[n].a.operand = GL_SRC_ALPHA; \
-		} \
-		else if ((envCombiner->vertex.alpha == COMBINED) || (envCombiner->vertex.alpha == i)) \
-		{ \
-			envCombiner->vertex.alpha = i; \
-			envCombiner->alpha[n].a.source = GL_PRIMARY_COLOR_ARB; \
-			envCombiner->alpha[n].a.operand = GL_SRC_ALPHA; \
-		} \
-	} \
-	else \
-	{ \
-		envCombiner->alpha[n].a.source = TexEnvArgs[i].source; \
-		envCombiner->alpha[n].a.operand = GL_SRC_ALPHA; \
-	}
+    { \
+        envCombiner->alpha[combinedUnit].outputTexture = GL_TEXTURE0_ARB + n; \
+        envCombiner->alpha[n].a.source = GL_TEXTURE0_ARB + n; \
+        envCombiner->alpha[n].a.operand = GL_SRC_ALPHA; \
+    } \
+    else*/
+#define SetAlphaCombinerArg(n, a, i)                                                               \
+    if (TexEnvArgs[i].source == GL_CONSTANT_ARB)                                                   \
+    {                                                                                              \
+        if ((envCombiner->alpha[n].constant == COMBINED) || (envCombiner->alpha[n].constant == i)) \
+        {                                                                                          \
+            envCombiner->alpha[n].constant = i;                                                    \
+            envCombiner->alpha[n].a.source = GL_CONSTANT_ARB;                                      \
+            envCombiner->alpha[n].a.operand = GL_SRC_ALPHA;                                        \
+        }                                                                                          \
+        else if ((envCombiner->vertex.alpha == COMBINED) || (envCombiner->vertex.alpha == i))      \
+        {                                                                                          \
+            envCombiner->vertex.alpha = i;                                                         \
+            envCombiner->alpha[n].a.source = GL_PRIMARY_COLOR_ARB;                                 \
+            envCombiner->alpha[n].a.operand = GL_SRC_ALPHA;                                        \
+        }                                                                                          \
+    }                                                                                              \
+    else                                                                                           \
+    {                                                                                              \
+        envCombiner->alpha[n].a.source = TexEnvArgs[i].source;                                     \
+        envCombiner->alpha[n].a.operand = GL_SRC_ALPHA;                                            \
+    }
 
-#define SetAlphaCombinerValues( n, a, s, o ) \
-	envCombiner->alpha[n].a.source = s; \
-	envCombiner->alpha[n].a.operand = o
+#define SetAlphaCombinerValues(n, a, s, o) \
+    envCombiner->alpha[n].a.source = s;    \
+    envCombiner->alpha[n].a.operand = o
 
 void Init_texture_env_combine()
 {
@@ -100,11 +100,11 @@ void Init_texture_env_combine()
     for (int i = 0; i < OGL.maxTextureUnits; i++)
     {
         TextureCache_ActivateDummy(i);
-        //glActiveTextureARB( GL_TEXTURE0_ARB + i );
-        //glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB );
-        //glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex );
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
-        //glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
+        // glActiveTextureARB( GL_TEXTURE0_ARB + i );
+        // glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE_ARB );
+        // glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, 4, 4, 0, GL_RGBA, GL_UNSIGNED_BYTE, tex );
+        // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+        // glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
     }
 
     if ((OGL.ARB_texture_env_crossbar) || (OGL.NV_texture_env_combine4) || (OGL.ATIX_texture_env_route))
@@ -432,7 +432,7 @@ TexEnvCombiner* Compile_texture_env_combine(Combiner* color, Combiner* alpha)
                         ((color->stage[i].op[j].param1 == TEXEL1) || (color->stage[i].op[j].param1 == TEXEL1_ALPHA)) && (curUnit == 0))
                         curUnit++;
 
-                // ATI_texture_env_combine3 adds GL_MODULATE_ADD_ATI; saves texture units
+                    // ATI_texture_env_combine3 adds GL_MODULATE_ADD_ATI; saves texture units
                     if ((OGL.ATI_texture_env_combine3) && (curUnit > 0) && (envCombiner->color[curUnit - 1].combine == GL_MODULATE))
                     {
                         curUnit--;
@@ -465,7 +465,9 @@ TexEnvCombiner* Compile_texture_env_combine(Combiner* color, Combiner* alpha)
                             envCombiner->color[curUnit].combine = GL_REPLACE;
                             SetColorCombinerArg(curUnit, arg0, color->stage[i].op[j].param2)
 
-                            color->stage[i].op[j].param2 = COMBINED;
+                            color->stage[i]
+                            .op[j]
+                            .param2 = COMBINED;
                         }
                         if (color->stage[i].op[j].param3 == TEXEL0)
                         {

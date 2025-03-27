@@ -25,27 +25,58 @@
 namespace xbrz
 {
     template <uint32_t N>
-    inline
-    unsigned char getByte(uint32_t val) { return static_cast<unsigned char>((val >> (8 * N)) & 0xff); }
+    inline unsigned char getByte(uint32_t val)
+    {
+        return static_cast<unsigned char>((val >> (8 * N)) & 0xff);
+    }
 
-    inline unsigned char getAlpha(uint32_t pix) { return getByte<3>(pix); }
-    inline unsigned char getRed(uint32_t pix) { return getByte<2>(pix); }
-    inline unsigned char getGreen(uint32_t pix) { return getByte<1>(pix); }
-    inline unsigned char getBlue(uint32_t pix) { return getByte<0>(pix); }
+    inline unsigned char getAlpha(uint32_t pix)
+    {
+        return getByte<3>(pix);
+    }
+    inline unsigned char getRed(uint32_t pix)
+    {
+        return getByte<2>(pix);
+    }
+    inline unsigned char getGreen(uint32_t pix)
+    {
+        return getByte<1>(pix);
+    }
+    inline unsigned char getBlue(uint32_t pix)
+    {
+        return getByte<0>(pix);
+    }
 
-    inline uint32_t makePixel(unsigned char a, unsigned char r, unsigned char g, unsigned char b) { return (a << 24) | (r << 16) | (g << 8) | b; }
-    inline uint32_t makePixel(unsigned char r, unsigned char g, unsigned char b) { return (r << 16) | (g << 8) | b; }
+    inline uint32_t makePixel(unsigned char a, unsigned char r, unsigned char g, unsigned char b)
+    {
+        return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+    inline uint32_t makePixel(unsigned char r, unsigned char g, unsigned char b)
+    {
+        return (r << 16) | (g << 8) | b;
+    }
 
-    inline uint32_t rgb555to888(uint16_t pix) { return ((pix & 0x7C00) << 9) | ((pix & 0x03E0) << 6) | ((pix & 0x001F) << 3); }
-    inline uint32_t rgb565to888(uint16_t pix) { return ((pix & 0xF800) << 8) | ((pix & 0x07E0) << 5) | ((pix & 0x001F) << 3); }
+    inline uint32_t rgb555to888(uint16_t pix)
+    {
+        return ((pix & 0x7C00) << 9) | ((pix & 0x03E0) << 6) | ((pix & 0x001F) << 3);
+    }
+    inline uint32_t rgb565to888(uint16_t pix)
+    {
+        return ((pix & 0xF800) << 8) | ((pix & 0x07E0) << 5) | ((pix & 0x001F) << 3);
+    }
 
-    inline uint16_t rgb888to555(uint32_t pix) { return static_cast<uint16_t>(((pix & 0xF80000) >> 9) | ((pix & 0x00F800) >> 6) | ((pix & 0x0000F8) >> 3)); }
-    inline uint16_t rgb888to565(uint32_t pix) { return static_cast<uint16_t>(((pix & 0xF80000) >> 8) | ((pix & 0x00FC00) >> 5) | ((pix & 0x0000F8) >> 3)); }
+    inline uint16_t rgb888to555(uint32_t pix)
+    {
+        return static_cast<uint16_t>(((pix & 0xF80000) >> 9) | ((pix & 0x00F800) >> 6) | ((pix & 0x0000F8) >> 3));
+    }
+    inline uint16_t rgb888to565(uint32_t pix)
+    {
+        return static_cast<uint16_t>(((pix & 0xF80000) >> 8) | ((pix & 0x00FC00) >> 5) | ((pix & 0x0000F8) >> 3));
+    }
 
 
     template <class Pix>
-    inline
-    Pix* byteAdvance(Pix* ptr, int bytes)
+    inline Pix* byteAdvance(Pix* ptr, int bytes)
     {
         using PixNonConst = typename std::remove_cv<Pix>::type;
         using PixByte = typename std::conditional<std::is_same<Pix, PixNonConst>::value, char, const char>::type;
@@ -56,13 +87,12 @@ namespace xbrz
     }
 
 
-    //fill block  with the given color
+    // fill block  with the given color
     template <class Pix>
-    inline
-    void fillBlock(Pix* trg, int pitch, Pix col, int blockWidth, int blockHeight)
+    inline void fillBlock(Pix* trg, int pitch, Pix col, int blockWidth, int blockHeight)
     {
-        //for (int y = 0; y < blockHeight; ++y, trg = byteAdvance(trg, pitch))
-        //    std::fill(trg, trg + blockWidth, col);
+        // for (int y = 0; y < blockHeight; ++y, trg = byteAdvance(trg, pitch))
+        //     std::fill(trg, trg + blockWidth, col);
 
         for (int y = 0; y < blockHeight; ++y, trg = byteAdvance(trg, pitch))
             for (int x = 0; x < blockWidth; ++x)
@@ -70,7 +100,7 @@ namespace xbrz
     }
 
 
-    //nearest-neighbor (going over target image - slow for upscaling, since source is read multiple times missing out on cache! Fast for similar image sizes!)
+    // nearest-neighbor (going over target image - slow for upscaling, since source is read multiple times missing out on cache! Fast for similar image sizes!)
     template <class PixSrc, class PixTrg, class PixConverter>
     void nearestNeighborScale(const PixSrc* src, int srcWidth, int srcHeight, int srcPitch,
                               /**/ PixTrg* trg, int trgWidth, int trgHeight, int trgPitch,
@@ -90,7 +120,8 @@ namespace xbrz
 
         yFirst = std::max(yFirst, 0);
         yLast = std::min(yLast, trgHeight);
-        if (yFirst >= yLast || srcHeight <= 0 || srcWidth <= 0) return;
+        if (yFirst >= yLast || srcHeight <= 0 || srcWidth <= 0)
+            return;
 
         for (int y = yFirst; y < yLast; ++y)
         {
@@ -107,7 +138,7 @@ namespace xbrz
     }
 
 
-    //nearest-neighbor (going over source image - fast for upscaling, since source is read only once
+    // nearest-neighbor (going over source image - fast for upscaling, since source is read only once
     template <class PixSrc, class PixTrg, class PixConverter>
     void nearestNeighborScaleOverSource(const PixSrc* src, int srcWidth, int srcHeight, int srcPitch,
                                         /**/ PixTrg* trg, int trgWidth, int trgHeight, int trgPitch,
@@ -127,14 +158,15 @@ namespace xbrz
 
         yFirst = std::max(yFirst, 0);
         yLast = std::min(yLast, srcHeight);
-        if (yFirst >= yLast || trgWidth <= 0 || trgHeight <= 0) return;
+        if (yFirst >= yLast || trgWidth <= 0 || trgHeight <= 0)
+            return;
 
         for (int y = yFirst; y < yLast; ++y)
         {
-            //mathematically: ySrc = floor(srcHeight * yTrg / trgHeight)
-            // => search for integers in: [ySrc, ySrc + 1) * trgHeight / srcHeight
+            // mathematically: ySrc = floor(srcHeight * yTrg / trgHeight)
+            //  => search for integers in: [ySrc, ySrc + 1) * trgHeight / srcHeight
 
-            //keep within for loop to support MT input slices!
+            // keep within for loop to support MT input slices!
             const int yTrgFirst = (y * trgHeight + srcHeight - 1) / srcHeight; //=ceil(y * trgHeight / srcHeight)
             const int yTrgLast = ((y + 1) * trgHeight + srcHeight - 1) / srcHeight; //=ceil(((y + 1) * trgHeight) / srcHeight)
             const int blockHeight = yTrgLast - yTrgFirst;
@@ -181,16 +213,16 @@ namespace xbrz
 
         yFirst = std::max(yFirst, 0);
         yLast = std::min(yLast, trgHeight);
-        if (yFirst >= yLast || srcHeight <= 0 || srcWidth <= 0) return;
+        if (yFirst >= yLast || srcHeight <= 0 || srcWidth <= 0)
+            return;
 
         const double scaleX = static_cast<double>(trgWidth) / srcWidth;
         const double scaleY = static_cast<double>(trgHeight) / srcHeight;
 
-        //perf notes:
-        //    -> double-based calculation is (slightly) faster than float
-        //    -> precalculation gives significant boost; std::vector<> memory allocation is negligible!
-        struct CoeffsX
-        {
+        // perf notes:
+        //     -> double-based calculation is (slightly) faster than float
+        //     -> precalculation gives significant boost; std::vector<> memory allocation is negligible!
+        struct CoeffsX {
             int x1 = 0;
             int x2 = 0;
             double xx1 = 0;
@@ -201,7 +233,8 @@ namespace xbrz
         {
             const int x1 = srcWidth * x / trgWidth;
             int x2 = x1 + 1;
-            if (x2 == srcWidth) --x2;
+            if (x2 == srcWidth)
+                --x2;
 
             const double xx1 = x / scaleX - x1;
             const double x2x = 1 - xx1;
@@ -213,7 +246,8 @@ namespace xbrz
         {
             const int y1 = srcHeight * y / trgHeight;
             int y2 = y1 + 1;
-            if (y2 == srcHeight) --y2;
+            if (y2 == srcHeight)
+                --y2;
 
             const double yy1 = y / scaleY - y1;
             const double y2y = 1 - yy1;
@@ -224,7 +258,7 @@ namespace xbrz
 
             for (int x = 0; x < trgWidth; ++x)
             {
-                //perf: do NOT "simplify" the variable layout without measurement!
+                // perf: do NOT "simplify" the variable layout without measurement!
                 const int x1 = buf[x].x1;
                 const int x2 = buf[x].x2;
                 const double xx1 = buf[x].xx1;
@@ -235,8 +269,7 @@ namespace xbrz
                 const double x2xyy1 = x2x * yy1;
                 const double xx1yy1 = xx1 * yy1;
 
-                auto interpolate = [=](int offset)
-                {
+                auto interpolate = [=](int offset) {
                     /*
                         https://en.wikipedia.org/wiki/Bilinear_interpolation
                         (c11(x2 - x) + c21(x - x1)) * (y2 - y ) +
@@ -248,7 +281,7 @@ namespace xbrz
                     const auto c22 = (srcLineNext[x2] >> (8 * offset)) & 0xff;
 
                     return c11 * x2xy2y + c21 * xx1y2y +
-                        c12 * x2xyy1 + c22 * xx1yy1;
+                    c12 * x2xyy1 + c22 * xx1yy1;
                 };
 
                 const double bi = interpolate(0);
@@ -267,6 +300,6 @@ namespace xbrz
             }
         }
     }
-}
+} // namespace xbrz
 
-#endif //XBRZ_TOOLS_H_825480175091875
+#endif // XBRZ_TOOLS_H_825480175091875

@@ -3,10 +3,9 @@
 
 #include "Types.h"
 
-#define MI_INTR_DP		0x20		// Bit 5: DP intr 
+#define MI_INTR_DP 0x20 // Bit 5: DP intr
 
-struct N64Regs
-{
+struct N64Regs {
     u32* MI_INTR;
 
     u32* DPC_START;

@@ -14,7 +14,7 @@
 
 HWND hWnd;
 HWND hStatusBar;
-//HWND		hFullscreen;
+// HWND		hFullscreen;
 HWND hToolBar;
 HINSTANCE hInstance;
 
@@ -51,7 +51,7 @@ EXPORT void CALL CaptureScreen(char* Directory)
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
 #else
-	OGL_SaveScreenshot();
+    OGL_SaveScreenshot();
 #endif
 }
 
@@ -221,7 +221,7 @@ EXPORT void CALL ProcessDList(void)
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
 #else
-	RSP_ProcessDList();
+    RSP_ProcessDList();
 #endif
 }
 
@@ -230,15 +230,15 @@ EXPORT void CALL ProcessRDPList(void)
     //*REG.DPC_CURRENT = *REG.DPC_START;
     /*	RSP.PCi = 0;
         RSP.PC[RSP.PCi] = *REG.DPC_CURRENT;
-        
+
         RSP.halt = FALSE;
-    
+
         while (RSP.PC[RSP.PCi] < *REG.DPC_END)
         {
             RSP.cmd0 = *(DWORD*)&RDRAM[RSP.PC[RSP.PCi]];
             RSP.cmd1 = *(DWORD*)&RDRAM[RSP.PC[RSP.PCi] + 4];
             RSP.PC[RSP.PCi] += 8;
-    
+
     /*		if ((RSP.cmd0 >> 24) == 0xE9)
             {
                 *REG.MI_INTR |= MI_INTR_DP;
@@ -246,7 +246,7 @@ EXPORT void CALL ProcessRDPList(void)
             }
             if ((RSP.cmd0 >> 24) == 0xCD)
                 RSP.cmd0 = RSP.cmd0;
-    
+
             GFXOp[RSP.cmd0 >> 24]();*/
     //*REG.DPC_CURRENT += 8;
     //	}
@@ -279,11 +279,11 @@ EXPORT void CALL RomClosed(void)
 
     RSP.thread = NULL;
 #else
-	OGL_Stop();
+    OGL_Stop();
 #endif
 
 #ifdef DEBUG
-	CloseDebugDlg();
+    CloseDebugDlg();
 #endif
 }
 
@@ -315,13 +315,13 @@ EXPORT void CALL RomOpen(void)
     RSP.thread = CreateThread(NULL, 4096, RSP_ThreadProc, NULL, NULL, &threadID);
     WaitForSingleObject(RSP.threadFinished, INFINITE);
 #else
-	RSP_Init();
+    RSP_Init();
 #endif
 
     OGL_ResizeWindow();
 
 #ifdef DEBUG
-	OpenDebugDlg();
+    OpenDebugDlg();
 #endif
 }
 
@@ -338,7 +338,7 @@ EXPORT void CALL UpdateScreen(void)
         WaitForSingleObject(RSP.threadFinished, INFINITE);
     }
 #else
-	VI_UpdateScreen();
+    VI_UpdateScreen();
 #endif
 }
 
@@ -350,7 +350,7 @@ EXPORT void CALL ViWidthChanged(void)
 {
 }
 
-//not to confuse with readscreen2 from mupen64plus specs (I think)
+// not to confuse with readscreen2 from mupen64plus specs (I think)
 EXPORT void CALL ReadScreen2(void** dest, long* width, long* height)
 {
     extern void* gCapturedPixels;

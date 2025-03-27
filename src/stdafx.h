@@ -10,4 +10,3 @@
 #include <math.h>
 #include <cstdint>
 #include "Types.h"
-

@@ -10,55 +10,51 @@ DebugInfo Debug;
 
 CHARFORMAT handledFormat =
 {
-    sizeof(CHARFORMAT),
-    CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
-    NULL,
-    200,
-    0,
-    RGB(0, 0, 0),
-    NULL,
-    NULL,
-    "Courier New"
-};
+sizeof(CHARFORMAT),
+CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
+NULL,
+200,
+0,
+RGB(0, 0, 0),
+NULL,
+NULL,
+"Courier New"};
 
 CHARFORMAT unknownFormat =
 {
-    sizeof(CHARFORMAT),
-    CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
-    NULL,
-    200,
-    0,
-    RGB(128, 128, 0),
-    NULL,
-    NULL,
-    "Courier New"
-};
+sizeof(CHARFORMAT),
+CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
+NULL,
+200,
+0,
+RGB(128, 128, 0),
+NULL,
+NULL,
+"Courier New"};
 
 CHARFORMAT errorFormat =
 {
-    sizeof(CHARFORMAT),
-    CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
-    NULL,
-    200,
-    0,
-    RGB(128, 0, 0),
-    NULL,
-    NULL,
-    "Courier New"
-};
+sizeof(CHARFORMAT),
+CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
+NULL,
+200,
+0,
+RGB(128, 0, 0),
+NULL,
+NULL,
+"Courier New"};
 
 CHARFORMAT detailFormat =
 {
-    sizeof(CHARFORMAT),
-    CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
-    NULL,
-    200,
-    0,
-    RGB(0, 128, 0),
-    NULL,
-    NULL,
-    "Courier New"
-};
+sizeof(CHARFORMAT),
+CFM_BOLD | CFM_COLOR | CFM_FACE | CFM_ITALIC | CFM_SIZE,
+NULL,
+200,
+0,
+RGB(0, 128, 0),
+NULL,
+NULL,
+"Courier New"};
 
 HWND hDebugDlg;
 BOOL DumpMessages;
@@ -76,9 +72,9 @@ INT_PTR CALLBACK DebugDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
-        /*                case IDC_DUMP: 
+        /*                case IDC_DUMP:
                             RSP.dumpNextDL = TRUE;
-                            return TRUE; 
+                            return TRUE;
                         case IDC_VERIFYCACHE:
                             if (!TextureCache_Verify())
                                 MessageBox( NULL, "Texture cache chain is currupted!", "glNintendo64()", MB_OK );
@@ -197,9 +193,9 @@ void OpenDebugDlg()
 {
     DumpMessages = FALSE;
     /*	hDebugDlg = CreateDialog( hInstance, MAKEINTRESOURCE(IDD_DEBUGDLG), NULL, DebugDlgProc );
-    
+
         MSG msg;
-    
+
         while (GetMessage( &msg, NULL, 0, 0)
         {
             if (IsWindow(hwndGoto)
@@ -265,7 +261,7 @@ void DebugMsg(WORD type, LPCSTR format, ...)
         {
             INT lineLength = SendDlgItemMessage(hDebugDlg, IDC_DEBUGEDIT, EM_LINELENGTH, 0, 0);
             SendDlgItemMessage(hDebugDlg, IDC_DEBUGEDIT, EM_SETSEL, 0, lineLength + 1);
-            SendDlgItemMessage(hDebugDlg, IDC_DEBUGEDIT, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM)"");
+            SendDlgItemMessage(hDebugDlg, IDC_DEBUGEDIT, EM_REPLACESEL, (WPARAM)FALSE, (LPARAM) "");
         }
 
         SendDlgItemMessage(hDebugDlg, IDC_DEBUGEDIT, EM_SETSEL, length, length);

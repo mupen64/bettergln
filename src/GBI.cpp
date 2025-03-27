@@ -23,16 +23,15 @@ char uc_str[256];
 
 SpecialMicrocodeInfo specialMicrocodes[] =
 {
-    {F3DWRUS, FALSE, 0xd17906e2, "RSP SW Version: 2.0D, 04-01-96"},
-    {F3DWRUS, FALSE, 0x94c4c833, "RSP SW Version: 2.0D, 04-01-96"},
+{F3DWRUS, FALSE, 0xd17906e2, "RSP SW Version: 2.0D, 04-01-96"},
+{F3DWRUS, FALSE, 0x94c4c833, "RSP SW Version: 2.0D, 04-01-96"},
 
-    {S2DEX, FALSE, 0x9df31081, "RSP Gfx ucode S2DEX  1.06 Yoshitaka Yasumoto Nintendo."},
+{S2DEX, FALSE, 0x9df31081, "RSP Gfx ucode S2DEX  1.06 Yoshitaka Yasumoto Nintendo."},
 
-    {F3DDKR, FALSE, 0x8d91244f, "Diddy Kong Racing"},
-    {F3DDKR, FALSE, 0x6e6fc893, "Diddy Kong Racing"},
-    {F3DDKR, FALSE, 0xbde9d1fb, "Jet Force Gemini"},
-    {F3DPD, FALSE, 0x1c4f7869, "Perfect Dark"}
-};
+{F3DDKR, FALSE, 0x8d91244f, "Diddy Kong Racing"},
+{F3DDKR, FALSE, 0x6e6fc893, "Diddy Kong Racing"},
+{F3DDKR, FALSE, 0xbde9d1fb, "Jet Force Gemini"},
+{F3DPD, FALSE, 0x1c4f7869, "Perfect Dark"}};
 
 u32 G_RDPHALF_1, G_RDPHALF_2, G_RDPHALF_CONT;
 u32 G_SPNOOP;
@@ -82,18 +81,18 @@ u32 G_MWO_aLIGHT_6, G_MWO_bLIGHT_6;
 u32 G_MWO_aLIGHT_7, G_MWO_bLIGHT_7;
 u32 G_MWO_aLIGHT_8, G_MWO_bLIGHT_8;
 
-//GBIFunc GBICmd[256];
+// GBIFunc GBICmd[256];
 GBIInfo GBI;
 
 void GBI_Unknown(u32 w0, u32 w1)
 {
 #ifdef DEBUG
-	if (Debug.level == DEBUG_LOW)
-		DebugMsg( DEBUG_LOW | DEBUG_UNKNOWN, "UNKNOWN GBI COMMAND 0x%02X", _SHIFTR( w0, 24, 8 ) );
-	if (Debug.level == DEBUG_MEDIUM)
-		DebugMsg( DEBUG_MEDIUM | DEBUG_UNKNOWN, "Unknown GBI Command 0x%02X", _SHIFTR( w0, 24, 8 ) );
-	else if (Debug.level == DEBUG_HIGH)
-		DebugMsg( DEBUG_HIGH | DEBUG_UNKNOWN, "// Unknown GBI Command 0x%02X", _SHIFTR( w0, 24, 8 ) );
+    if (Debug.level == DEBUG_LOW)
+        DebugMsg(DEBUG_LOW | DEBUG_UNKNOWN, "UNKNOWN GBI COMMAND 0x%02X", _SHIFTR(w0, 24, 8));
+    if (Debug.level == DEBUG_MEDIUM)
+        DebugMsg(DEBUG_MEDIUM | DEBUG_UNKNOWN, "Unknown GBI Command 0x%02X", _SHIFTR(w0, 24, 8));
+    else if (Debug.level == DEBUG_HIGH)
+        DebugMsg(DEBUG_HIGH | DEBUG_UNKNOWN, "// Unknown GBI Command 0x%02X", _SHIFTR(w0, 24, 8));
 #endif
 }
 
@@ -288,7 +287,7 @@ MicrocodeInfo* GBI_DetectMicrocode(u32 uc_start, u32 uc_dstart, u16 uc_dsize)
     }
 
     // Let the user choose the microcode
-    current->type = DialogBox(hInstance, MAKEINTRESOURCE( IDD_MICROCODEDLG ), hWnd, MicrocodeDlgProc);
+    current->type = DialogBox(hInstance, MAKEINTRESOURCE(IDD_MICROCODEDLG), hWnd, MicrocodeDlgProc);
     return current;
 }
 
@@ -322,27 +321,38 @@ void GBI_MakeCurrent(MicrocodeInfo* current)
 
         switch (current->type)
         {
-        case F3D: F3D_Init();
+        case F3D:
+            F3D_Init();
             break;
-        case F3DEX: F3DEX_Init();
+        case F3DEX:
+            F3DEX_Init();
             break;
-        case F3DEX2: F3DEX2_Init();
+        case F3DEX2:
+            F3DEX2_Init();
             break;
-        case L3D: L3D_Init();
+        case L3D:
+            L3D_Init();
             break;
-        case L3DEX: L3DEX_Init();
+        case L3DEX:
+            L3DEX_Init();
             break;
-        case L3DEX2: L3DEX2_Init();
+        case L3DEX2:
+            L3DEX2_Init();
             break;
-        case S2DEX: S2DEX_Init();
+        case S2DEX:
+            S2DEX_Init();
             break;
-        case S2DEX2: S2DEX2_Init();
+        case S2DEX2:
+            S2DEX2_Init();
             break;
-        case F3DDKR: F3DDKR_Init();
+        case F3DDKR:
+            F3DDKR_Init();
             break;
-        case F3DWRUS: F3DWRUS_Init();
+        case F3DWRUS:
+            F3DWRUS_Init();
             break;
-        case F3DPD: F3DPD_Init();
+        case F3DPD:
+            F3DPD_Init();
             break;
         }
     }

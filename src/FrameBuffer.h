@@ -4,8 +4,7 @@
 #include "Types.h"
 #include "Textures.h"
 
-struct FrameBuffer
-{
+struct FrameBuffer {
     FrameBuffer *higher, *lower;
 
     CachedTexture* texture;
@@ -15,8 +14,7 @@ struct FrameBuffer
     float scaleX, scaleY;
 };
 
-struct FrameBufferInfo
-{
+struct FrameBufferInfo {
     FrameBuffer *top, *bottom, *current;
     int numBuffers;
 };

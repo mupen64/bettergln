@@ -6,8 +6,7 @@
 #include "glATI.h"
 #include "gSP.h"
 
-struct GLVertex
-{
+struct GLVertex {
     float x, y, z, w;
 
     struct
@@ -19,8 +18,7 @@ struct GLVertex
     float fog;
 };
 
-struct GLInfo
-{
+struct GLInfo {
     HGLRC hRC, hPbufferRC;
     HDC hDC, hPbufferDC;
     HWND hWnd;
@@ -54,12 +52,12 @@ struct GLInfo
     int maxTextureUnits; // TNT = 2, GeForce = 2-4, Rage 128 = 2, Radeon = 3-6
     int maxGeneralCombiners;
 
-    int textureFilter; //0 - None, 1 - 2xSai, 2 - xBRZ
+    int textureFilter; // 0 - None, 1 - 2xSai, 2 - xBRZ
     BOOL frameBufferTextures;
     int textureBitDepth;
     float originAdjust;
-    int filterScale = 4; //for xBRZ
-    BOOL filterChanged = FALSE; //for cache
+    int filterScale = 4; // for xBRZ
+    BOOL filterChanged = FALSE; // for cache
 
     GLVertex vertices[256];
     BYTE triangles[80][3];
@@ -82,8 +80,7 @@ struct GLInfo
 
 extern GLInfo OGL;
 
-struct GLcolor
-{
+struct GLcolor {
     float r, g, b, a;
 };
 

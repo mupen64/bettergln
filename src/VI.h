@@ -2,8 +2,7 @@
 #define VI_H
 #include "Types.h"
 
-struct VIInfo
-{
+struct VIInfo {
     u32 width, height;
     u32 lastOrigin;
 };

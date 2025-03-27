@@ -3,28 +3,26 @@
 
 #include "FrameBuffer.h"
 
-#define CHANGED_RENDERMODE		0x001
-#define CHANGED_CYCLETYPE		0x002
-#define CHANGED_SCISSOR			0x004
-#define CHANGED_TMEM			0x008
-#define CHANGED_TILE			0x010
-#define CHANGED_COMBINE_COLORS	0x020
-#define CHANGED_COMBINE			0x040
-#define CHANGED_ALPHACOMPARE	0x080
-#define CHANGED_FOGCOLOR		0x100
+#define CHANGED_RENDERMODE 0x001
+#define CHANGED_CYCLETYPE 0x002
+#define CHANGED_SCISSOR 0x004
+#define CHANGED_TMEM 0x008
+#define CHANGED_TILE 0x010
+#define CHANGED_COMBINE_COLORS 0x020
+#define CHANGED_COMBINE 0x040
+#define CHANGED_ALPHACOMPARE 0x080
+#define CHANGED_FOGCOLOR 0x100
 
-#define TEXTUREMODE_NORMAL		0
-#define TEXTUREMODE_TEXRECT		1
-#define TEXTUREMODE_BGIMAGE		2
-#define TEXTUREMODE_FRAMEBUFFER	3
+#define TEXTUREMODE_NORMAL 0
+#define TEXTUREMODE_TEXRECT 1
+#define TEXTUREMODE_BGIMAGE 2
+#define TEXTUREMODE_FRAMEBUFFER 3
 
-#define LOADTYPE_BLOCK			0
-#define LOADTYPE_TILE			1
+#define LOADTYPE_BLOCK 0
+#define LOADTYPE_TILE 1
 
-struct gDPCombine
-{
-    union
-    {
+struct gDPCombine {
+    union {
         struct
         {
             // muxs1
@@ -57,12 +55,10 @@ struct gDPCombine
     };
 };
 
-struct gDPTile
-{
+struct gDPTile {
     u32 format, size, line, tmem, palette;
 
-    union
-    {
+    union {
         struct
         {
             unsigned mirrort : 1;
@@ -87,12 +83,10 @@ struct gDPTile
     u32 uls, ult, lrs, lrt;
 };
 
-struct gDPInfo
-{
+struct gDPInfo {
     struct
     {
-        union
-        {
+        union {
             struct
             {
                 unsigned int alphaCompare : 2;
@@ -222,7 +216,7 @@ struct gDPInfo
 
     u32 changed;
 
-    //u16 palette[256];
+    // u16 palette[256];
     u32 paletteCRC16[16];
     u32 paletteCRC256;
     u32 half_1, half_2;

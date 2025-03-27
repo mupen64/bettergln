@@ -6,161 +6,161 @@
 #include "gDP.h"
 #include "gSP.h"
 
-#define SetColorCombinerInput( n, v, p, s ) \
-	if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV) \
-	{ \
-		if ((p > 5) && ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p))) \
-		{ \
-			regCombiners->constant[0].alpha = p; \
-			regCombiners->color[n].v.input = GL_CONSTANT_COLOR0_NV; \
-			regCombiners->color[n].v.usage = GL_ALPHA; \
-		} \
-		else if ((p > 5) && ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p))) \
-		{ \
-			regCombiners->constant[1].alpha = p; \
-			regCombiners->color[n].v.input = GL_CONSTANT_COLOR1_NV; \
-			regCombiners->color[n].v.usage = GL_ALPHA; \
-		} \
-		else if ((p > 5) && ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p))) \
-		{ \
-			regCombiners->vertex.alpha = p; \
-			regCombiners->color[n].v.input = GL_PRIMARY_COLOR_NV; \
-			regCombiners->color[n].v.usage = GL_ALPHA; \
-		} \
-		else if ((regCombiners->constant[0].color == COMBINED) || (regCombiners->constant[0].color == p)) \
-		{ \
-			regCombiners->constant[0].color = p; \
-			regCombiners->color[n].v.input = GL_CONSTANT_COLOR0_NV; \
-			regCombiners->color[n].v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->constant[1].color == COMBINED) || (regCombiners->constant[1].color == p)) \
-		{ \
-			regCombiners->constant[1].color = p; \
-			regCombiners->color[n].v.input = GL_CONSTANT_COLOR1_NV; \
-			regCombiners->color[n].v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->vertex.secondaryColor == COMBINED) || (regCombiners->vertex.secondaryColor == p)) \
-		{ \
-			regCombiners->vertex.secondaryColor = p; \
-			regCombiners->color[n].v.input = GL_SECONDARY_COLOR_NV; \
-			regCombiners->color[n].v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->vertex.color == COMBINED) || (regCombiners->vertex.color == p)) \
-		{ \
-			regCombiners->vertex.color = p; \
-			regCombiners->color[n].v.input = GL_PRIMARY_COLOR_NV; \
-			regCombiners->color[n].v.usage = GL_RGB; \
-		} \
-	} \
-	else \
-	{ \
-			regCombiners->color[n].v.input = CombinerInputs[p].input; \
-			regCombiners->color[n].v.usage = CombinerInputs[p].usage; \
-	} \
-	regCombiners->color[n].v.mapping = CombinerInputs[p].mapping; \
-	regCombiners->color[n].v.used = s
+#define SetColorCombinerInput(n, v, p, s)                                                                              \
+    if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV)                                                              \
+    {                                                                                                                  \
+        if ((p > 5) && ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p)))      \
+        {                                                                                                              \
+            regCombiners->constant[0].alpha = p;                                                                       \
+            regCombiners->color[n].v.input = GL_CONSTANT_COLOR0_NV;                                                    \
+            regCombiners->color[n].v.usage = GL_ALPHA;                                                                 \
+        }                                                                                                              \
+        else if ((p > 5) && ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p))) \
+        {                                                                                                              \
+            regCombiners->constant[1].alpha = p;                                                                       \
+            regCombiners->color[n].v.input = GL_CONSTANT_COLOR1_NV;                                                    \
+            regCombiners->color[n].v.usage = GL_ALPHA;                                                                 \
+        }                                                                                                              \
+        else if ((p > 5) && ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p)))           \
+        {                                                                                                              \
+            regCombiners->vertex.alpha = p;                                                                            \
+            regCombiners->color[n].v.input = GL_PRIMARY_COLOR_NV;                                                      \
+            regCombiners->color[n].v.usage = GL_ALPHA;                                                                 \
+        }                                                                                                              \
+        else if ((regCombiners->constant[0].color == COMBINED) || (regCombiners->constant[0].color == p))              \
+        {                                                                                                              \
+            regCombiners->constant[0].color = p;                                                                       \
+            regCombiners->color[n].v.input = GL_CONSTANT_COLOR0_NV;                                                    \
+            regCombiners->color[n].v.usage = GL_RGB;                                                                   \
+        }                                                                                                              \
+        else if ((regCombiners->constant[1].color == COMBINED) || (regCombiners->constant[1].color == p))              \
+        {                                                                                                              \
+            regCombiners->constant[1].color = p;                                                                       \
+            regCombiners->color[n].v.input = GL_CONSTANT_COLOR1_NV;                                                    \
+            regCombiners->color[n].v.usage = GL_RGB;                                                                   \
+        }                                                                                                              \
+        else if ((regCombiners->vertex.secondaryColor == COMBINED) || (regCombiners->vertex.secondaryColor == p))      \
+        {                                                                                                              \
+            regCombiners->vertex.secondaryColor = p;                                                                   \
+            regCombiners->color[n].v.input = GL_SECONDARY_COLOR_NV;                                                    \
+            regCombiners->color[n].v.usage = GL_RGB;                                                                   \
+        }                                                                                                              \
+        else if ((regCombiners->vertex.color == COMBINED) || (regCombiners->vertex.color == p))                        \
+        {                                                                                                              \
+            regCombiners->vertex.color = p;                                                                            \
+            regCombiners->color[n].v.input = GL_PRIMARY_COLOR_NV;                                                      \
+            regCombiners->color[n].v.usage = GL_RGB;                                                                   \
+        }                                                                                                              \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        regCombiners->color[n].v.input = CombinerInputs[p].input;                                                      \
+        regCombiners->color[n].v.usage = CombinerInputs[p].usage;                                                      \
+    }                                                                                                                  \
+    regCombiners->color[n].v.mapping = CombinerInputs[p].mapping;                                                      \
+    regCombiners->color[n].v.used = s
 
-#define SetColorCombinerVariable( n, v, i, m, u, s ) \
-	regCombiners->color[n].v.input = i; \
-	regCombiners->color[n].v.mapping = m; \
-	regCombiners->color[n].v.usage = u; \
-	regCombiners->color[n].v.used = s
+#define SetColorCombinerVariable(n, v, i, m, u, s) \
+    regCombiners->color[n].v.input = i;            \
+    regCombiners->color[n].v.mapping = m;          \
+    regCombiners->color[n].v.usage = u;            \
+    regCombiners->color[n].v.used = s
 
-#define SetAlphaCombinerInput( n, v, p, use ) \
-	if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV) \
-	{ \
-		if ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p)) \
-		{ \
-			regCombiners->constant[0].alpha = p; \
-			regCombiners->alpha[n].v.input = GL_CONSTANT_COLOR0_NV; \
-			regCombiners->alpha[n].v.usage = GL_ALPHA; \
-		} \
-		else if ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p)) \
-		{ \
-			regCombiners->constant[1].alpha = p; \
-			regCombiners->alpha[n].v.input = GL_CONSTANT_COLOR1_NV; \
-			regCombiners->alpha[n].v.usage = GL_ALPHA; \
-		} \
-		else if ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p)) \
-		{ \
-			regCombiners->vertex.alpha = p; \
-			regCombiners->alpha[n].v.input = GL_PRIMARY_COLOR_NV; \
-			regCombiners->alpha[n].v.usage = GL_ALPHA; \
-		} \
-	} \
-	else \
-	{ \
-			regCombiners->alpha[n].v.input = CombinerInputs[p].input; \
-			regCombiners->alpha[n].v.usage = CombinerInputs[p].usage; \
-	} \
-	regCombiners->alpha[n].v.mapping = CombinerInputs[p].mapping; \
-	regCombiners->alpha[n].v.used = use
+#define SetAlphaCombinerInput(n, v, p, use)                                                               \
+    if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV)                                                 \
+    {                                                                                                     \
+        if ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p))      \
+        {                                                                                                 \
+            regCombiners->constant[0].alpha = p;                                                          \
+            regCombiners->alpha[n].v.input = GL_CONSTANT_COLOR0_NV;                                       \
+            regCombiners->alpha[n].v.usage = GL_ALPHA;                                                    \
+        }                                                                                                 \
+        else if ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p)) \
+        {                                                                                                 \
+            regCombiners->constant[1].alpha = p;                                                          \
+            regCombiners->alpha[n].v.input = GL_CONSTANT_COLOR1_NV;                                       \
+            regCombiners->alpha[n].v.usage = GL_ALPHA;                                                    \
+        }                                                                                                 \
+        else if ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p))           \
+        {                                                                                                 \
+            regCombiners->vertex.alpha = p;                                                               \
+            regCombiners->alpha[n].v.input = GL_PRIMARY_COLOR_NV;                                         \
+            regCombiners->alpha[n].v.usage = GL_ALPHA;                                                    \
+        }                                                                                                 \
+    }                                                                                                     \
+    else                                                                                                  \
+    {                                                                                                     \
+        regCombiners->alpha[n].v.input = CombinerInputs[p].input;                                         \
+        regCombiners->alpha[n].v.usage = CombinerInputs[p].usage;                                         \
+    }                                                                                                     \
+    regCombiners->alpha[n].v.mapping = CombinerInputs[p].mapping;                                         \
+    regCombiners->alpha[n].v.used = use
 
-#define SetAlphaCombinerVariable( n, v, i, m, u, use ) \
-	regCombiners->alpha[n].v.input = i; \
-	regCombiners->alpha[n].v.mapping = m; \
-	regCombiners->alpha[n].v.usage = u; \
-	regCombiners->alpha[n].v.used = use
+#define SetAlphaCombinerVariable(n, v, i, m, u, use) \
+    regCombiners->alpha[n].v.input = i;              \
+    regCombiners->alpha[n].v.mapping = m;            \
+    regCombiners->alpha[n].v.usage = u;              \
+    regCombiners->alpha[n].v.used = use
 
-#define SetFinalCombinerInput( v, p, use ) \
-	if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV) \
-	{ \
-		if ((p > 5) && ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p))) \
-		{ \
-			regCombiners->constant[0].alpha = p; \
-			regCombiners->final.v.input = GL_CONSTANT_COLOR0_NV; \
-			regCombiners->final.v.usage = GL_ALPHA; \
-		} \
-		else if ((p > 5) && ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p))) \
-		{ \
-			regCombiners->constant[1].alpha = p; \
-			regCombiners->final.v.input = GL_CONSTANT_COLOR1_NV; \
-			regCombiners->final.v.usage = GL_ALPHA; \
-		} \
-		else if ((p > 5) && ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p))) \
-		{ \
-			regCombiners->vertex.alpha = p; \
-			regCombiners->final.v.input = GL_PRIMARY_COLOR_NV; \
-			regCombiners->final.v.usage = GL_ALPHA; \
-		} \
-		else if ((regCombiners->constant[0].color == COMBINED) || (regCombiners->constant[0].color == p)) \
-		{ \
-			regCombiners->constant[0].color = p; \
-			regCombiners->final.v.input = GL_CONSTANT_COLOR0_NV; \
-			regCombiners->final.v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->constant[1].color == COMBINED) || (regCombiners->constant[1].color == p)) \
-		{ \
-			regCombiners->constant[1].color = p; \
-			regCombiners->final.v.input = GL_CONSTANT_COLOR1_NV; \
-			regCombiners->final.v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->vertex.secondaryColor == COMBINED) || (regCombiners->vertex.secondaryColor == p)) \
-		{ \
-			regCombiners->vertex.secondaryColor = p; \
-			regCombiners->final.v.input = GL_SECONDARY_COLOR_NV; \
-			regCombiners->final.v.usage = GL_RGB; \
-		} \
-		else if ((regCombiners->vertex.color == COMBINED) || (regCombiners->vertex.color == p)) \
-		{ \
-			regCombiners->vertex.color = p; \
-			regCombiners->final.v.input = GL_PRIMARY_COLOR_NV; \
-			regCombiners->final.v.usage = GL_RGB; \
-		} \
-	} \
-	else \
-	{ \
-			regCombiners->final.v.input = CombinerInputs[p].input; \
-			regCombiners->final.v.usage = CombinerInputs[p].usage; \
-	} \
-	regCombiners->final.v.mapping = CombinerInputs[p].mapping; \
-	regCombiners->final.v.used = use
+#define SetFinalCombinerInput(v, p, use)                                                                               \
+    if (CombinerInputs[p].input == GL_CONSTANT_COLOR0_NV)                                                              \
+    {                                                                                                                  \
+        if ((p > 5) && ((regCombiners->constant[0].alpha == COMBINED) || (regCombiners->constant[0].alpha == p)))      \
+        {                                                                                                              \
+            regCombiners->constant[0].alpha = p;                                                                       \
+            regCombiners->final.v.input = GL_CONSTANT_COLOR0_NV;                                                       \
+            regCombiners->final.v.usage = GL_ALPHA;                                                                    \
+        }                                                                                                              \
+        else if ((p > 5) && ((regCombiners->constant[1].alpha == COMBINED) || (regCombiners->constant[1].alpha == p))) \
+        {                                                                                                              \
+            regCombiners->constant[1].alpha = p;                                                                       \
+            regCombiners->final.v.input = GL_CONSTANT_COLOR1_NV;                                                       \
+            regCombiners->final.v.usage = GL_ALPHA;                                                                    \
+        }                                                                                                              \
+        else if ((p > 5) && ((regCombiners->vertex.alpha == COMBINED) || (regCombiners->vertex.alpha == p)))           \
+        {                                                                                                              \
+            regCombiners->vertex.alpha = p;                                                                            \
+            regCombiners->final.v.input = GL_PRIMARY_COLOR_NV;                                                         \
+            regCombiners->final.v.usage = GL_ALPHA;                                                                    \
+        }                                                                                                              \
+        else if ((regCombiners->constant[0].color == COMBINED) || (regCombiners->constant[0].color == p))              \
+        {                                                                                                              \
+            regCombiners->constant[0].color = p;                                                                       \
+            regCombiners->final.v.input = GL_CONSTANT_COLOR0_NV;                                                       \
+            regCombiners->final.v.usage = GL_RGB;                                                                      \
+        }                                                                                                              \
+        else if ((regCombiners->constant[1].color == COMBINED) || (regCombiners->constant[1].color == p))              \
+        {                                                                                                              \
+            regCombiners->constant[1].color = p;                                                                       \
+            regCombiners->final.v.input = GL_CONSTANT_COLOR1_NV;                                                       \
+            regCombiners->final.v.usage = GL_RGB;                                                                      \
+        }                                                                                                              \
+        else if ((regCombiners->vertex.secondaryColor == COMBINED) || (regCombiners->vertex.secondaryColor == p))      \
+        {                                                                                                              \
+            regCombiners->vertex.secondaryColor = p;                                                                   \
+            regCombiners->final.v.input = GL_SECONDARY_COLOR_NV;                                                       \
+            regCombiners->final.v.usage = GL_RGB;                                                                      \
+        }                                                                                                              \
+        else if ((regCombiners->vertex.color == COMBINED) || (regCombiners->vertex.color == p))                        \
+        {                                                                                                              \
+            regCombiners->vertex.color = p;                                                                            \
+            regCombiners->final.v.input = GL_PRIMARY_COLOR_NV;                                                         \
+            regCombiners->final.v.usage = GL_RGB;                                                                      \
+        }                                                                                                              \
+    }                                                                                                                  \
+    else                                                                                                               \
+    {                                                                                                                  \
+        regCombiners->final.v.input = CombinerInputs[p].input;                                                         \
+        regCombiners->final.v.usage = CombinerInputs[p].usage;                                                         \
+    }                                                                                                                  \
+    regCombiners->final.v.mapping = CombinerInputs[p].mapping;                                                         \
+    regCombiners->final.v.used = use
 
-#define SetFinalCombinerVariable( v, i, m, u, use ) \
-	regCombiners->final.v.input = i; \
-	regCombiners->final.v.mapping = m; \
-	regCombiners->final.v.usage = u; \
-	regCombiners->final.v.used = use
+#define SetFinalCombinerVariable(v, i, m, u, use) \
+    regCombiners->final.v.input = i;              \
+    regCombiners->final.v.mapping = m;            \
+    regCombiners->final.v.usage = u;              \
+    regCombiners->final.v.used = use
 
 void Init_NV_register_combiners()
 {
@@ -229,7 +229,8 @@ RegisterCombiners* Compile_NV_register_combiners(Combiner* color, Combiner* alph
 
     if ((gSP.geometryMode & G_FOG) &&
         ((gDP.otherMode.cycleType == G_CYC_1CYCLE) ||
-            (gDP.otherMode.cycleType == G_CYC_2CYCLE)) && OGL.fog)
+         (gDP.otherMode.cycleType == G_CYC_2CYCLE)) &&
+        OGL.fog)
     {
         SetFinalCombinerVariable(A, GL_FOG, GL_UNSIGNED_IDENTITY_NV, GL_ALPHA, FALSE);
         SetFinalCombinerVariable(C, GL_FOG, GL_UNSIGNED_IDENTITY_NV, GL_RGB, FALSE);
@@ -496,7 +497,7 @@ RegisterCombiners* Compile_NV_register_combiners(Combiner* color, Combiner* alph
         }
     }
 
-    regCombiners->numCombiners = max(min( curCombiner + 1, OGL.maxGeneralCombiners ), numCombiners);
+    regCombiners->numCombiners = max(min(curCombiner + 1, OGL.maxGeneralCombiners), numCombiners);
 
     return regCombiners;
 }
@@ -512,12 +513,16 @@ void Set_NV_register_combiners(RegisterCombiners* regCombiners)
     combiner.vertex.alpha = regCombiners->vertex.alpha;
 
     glActiveTextureARB(GL_TEXTURE0_ARB);
-    if (combiner.usesT0) glEnable(GL_TEXTURE_2D);
-    else glDisable(GL_TEXTURE_2D);
+    if (combiner.usesT0)
+        glEnable(GL_TEXTURE_2D);
+    else
+        glDisable(GL_TEXTURE_2D);
 
     glActiveTextureARB(GL_TEXTURE1_ARB);
-    if (combiner.usesT1) glEnable(GL_TEXTURE_2D);
-    else glDisable(GL_TEXTURE_2D);
+    if (combiner.usesT1)
+        glEnable(GL_TEXTURE_2D);
+    else
+        glDisable(GL_TEXTURE_2D);
 
     glCombinerParameteriNV(GL_NUM_GENERAL_COMBINERS_NV, regCombiners->numCombiners);
 

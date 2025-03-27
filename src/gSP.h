@@ -4,15 +4,14 @@
 #include "GBI.h"
 #include "gDP.h"
 
-#define CHANGED_VIEWPORT		0x01
-#define CHANGED_MATRIX			0x02
-#define CHANGED_COLORBUFFER		0x04
-#define CHANGED_GEOMETRYMODE	0x08
-#define CHANGED_TEXTURE			0x10
-#define CHANGED_FOGPOSITION		0x10
+#define CHANGED_VIEWPORT 0x01
+#define CHANGED_MATRIX 0x02
+#define CHANGED_COLORBUFFER 0x04
+#define CHANGED_GEOMETRYMODE 0x08
+#define CHANGED_TEXTURE 0x10
+#define CHANGED_FOGPOSITION 0x10
 
-struct SPVertex
-{
+struct SPVertex {
     f32 x, y, z, w;
     f32 nx, ny, nz;
     f32 r, g, b, a;
@@ -23,8 +22,7 @@ struct SPVertex
 
 using SPTriangle = SPVertex[3];
 
-struct gSPInfo
-{
+struct gSPInfo {
     u32 segment[16];
 
     struct

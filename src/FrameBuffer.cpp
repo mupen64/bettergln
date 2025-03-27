@@ -231,10 +231,10 @@ void FrameBuffer_RenderBuffer(u32 address)
                                 glActiveTextureARB( GL_TEXTURE0_ARB + i );
                                 glDisable( GL_TEXTURE_2D );
                             }
-            
+
                             glActiveTextureARB( GL_TEXTURE0_ARB );
                         }
-            
+
                         TextureCache_ActivateTexture( 0, current->texture );
                         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
                         glEnable( GL_TEXTURE_2D );*/
@@ -310,10 +310,10 @@ void FrameBuffer_RestoreBuffer(u32 address, u16 size, u16 width)
                                 glActiveTextureARB( GL_TEXTURE0_ARB + i );
                                 glDisable( GL_TEXTURE_2D );
                             }
-            
+
                             glActiveTextureARB( GL_TEXTURE0_ARB );
                         }
-            
+
                         TextureCache_ActivateTexture( 0, current->texture );
                         glTexEnvi( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
                         glEnable( GL_TEXTURE_2D );*/
@@ -327,7 +327,7 @@ void FrameBuffer_RestoreBuffer(u32 address, u16 size, u16 width)
             glDisable(GL_SCISSOR_TEST);
             glDisable(GL_CULL_FACE);
             glDisable(GL_POLYGON_OFFSET_FILL);
-            //glDisable( GL_REGISTER_COMBINERS_NV );
+            // glDisable( GL_REGISTER_COMBINERS_NV );
             glDisable(GL_FOG);
             //			glDepthMask( FALSE );
 

@@ -16,7 +16,7 @@ void F3DDKR_DMA_Mtx(u32 w0, u32 w1)
     {
         //		GBI_DetectUCode(); // Something's wrong
 #ifdef DEBUG
-	DebugMsg( DEBUG_MEDIUM | DEBUG_HIGH | DEBUG_ERROR, "G_MTX: address = 0x%08X    length = %i    params = 0x%02X\n", w1, _SHIFTR( w0, 0, 16 ), _SHIFTR( w0, 16, 8 ) );
+        DebugMsg(DEBUG_MEDIUM | DEBUG_HIGH | DEBUG_ERROR, "G_MTX: address = 0x%08X    length = %i    params = 0x%02X\n", w1, _SHIFTR(w0, 0, 16), _SHIFTR(w0, 16, 8));
 #endif
         return;
     }

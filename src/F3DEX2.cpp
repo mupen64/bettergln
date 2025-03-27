@@ -26,7 +26,7 @@ void F3DEX2_MoveMem(u32 w0, u32 w1)
     case G_MV_MATRIX:
         gSPForceMatrix(w1);
 
-    // force matrix takes two commands
+        // force matrix takes two commands
         RSP.PC[RSP.PCi] += 8;
         break;
     case G_MV_LIGHT:
@@ -36,10 +36,10 @@ void F3DEX2_MoveMem(u32 w0, u32 w1)
         {
             gSPLight(w1, (offset - 24) / 24);
         }
-    /*			else
-                {
-                    // Do lookat stuff
-                }*/
+        /*			else
+                    {
+                        // Do lookat stuff
+                    }*/
         break;
     }
 }
@@ -89,10 +89,10 @@ void F3DEX2_MoveWord(u32 w0, u32 w1)
         break;
     case G_MW_FOG:
         /*			s16 fm, fo, min, max;
-        
+
                     fm = _SHIFTR( w1, 16, 16 );
                     fo = _SHIFTR( w1, 0, 16 );
-        
+
                     min = 500 - (fo * (128000 / fm)) / 256;
                     max = (128000 / fm) + min;*/
 
@@ -135,8 +135,8 @@ void F3DEX2_MoveWord(u32 w0, u32 w1)
 
 void F3DEX2_Texture(u32 w0, u32 w1)
 {
-    gSPTexture(_FIXED2FLOAT(_SHIFTR( w1, 16, 16 ), 16),
-               _FIXED2FLOAT(_SHIFTR( w1, 0, 16 ), 16),
+    gSPTexture(_FIXED2FLOAT(_SHIFTR(w1, 16, 16), 16),
+               _FIXED2FLOAT(_SHIFTR(w1, 0, 16), 16),
                _SHIFTR(w0, 11, 3),
                _SHIFTR(w0, 8, 3),
                _SHIFTR(w0, 1, 7));

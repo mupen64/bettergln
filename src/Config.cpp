@@ -36,19 +36,18 @@ struct
     WORD width, height;
     char* description;
 } windowedModes[numWindowedModes] = {
-    {320, 240, "320 x 240"},
-    {400, 300, "400 x 300"},
-    {480, 360, "480 x 360"},
-    {640, 480, "640 x 480"},
-    {800, 600, "800 x 600"},
-    {960, 720, "960 x 720"},
-    {1024, 768, "1024 x 768"},
-    {1152, 864, "1152 x 864"},
-    {1280, 960, "1280 x 960"},
-    {1280, 1024, "1280 x 1024"},
-    {1440, 1080, "1440 x 1080"},
-    {1600, 1200, "1600 x 1200"}
-};
+{320, 240, "320 x 240"},
+{400, 300, "400 x 300"},
+{480, 360, "480 x 360"},
+{640, 480, "640 x 480"},
+{800, 600, "800 x 600"},
+{960, 720, "960 x 720"},
+{1024, 768, "1024 x 768"},
+{1152, 864, "1152 x 864"},
+{1280, 960, "1280 x 960"},
+{1280, 1024, "1280 x 1024"},
+{1440, 1080, "1440 x 1080"},
+{1600, 1200, "1600 x 1200"}};
 
 void EnableCustom(HWND hWndDlg, BOOL enable)
 {
@@ -97,7 +96,8 @@ void Config_LoadConfig()
 
         RegQueryValueEx(hKey, "Filter Scale", 0, NULL, (BYTE*)&value, &size);
         OGL.filterScale = value;
-        if (OGL.textureFilter == SaI) OGL.filterScale = 2; //in case something happens
+        if (OGL.textureFilter == SaI)
+            OGL.filterScale = 2; // in case something happens
 
         RegQueryValueEx(hKey, "Enable Fog", 0, NULL, (BYTE*)&value, &size);
         OGL.fog = value ? TRUE : FALSE;
@@ -204,10 +204,12 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
     OGL.forceBilinear = (SendDlgItemMessage(hWndDlg, IDC_FORCEBILINEAR, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
     int temp = OGL.textureFilter;
     OGL.textureFilter = SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_GETCURSEL, NULL, NULL);
-    if (temp != OGL.textureFilter) OGL.filterChanged = TRUE;
+    if (temp != OGL.textureFilter)
+        OGL.filterChanged = TRUE;
     temp = OGL.filterScale;
-    OGL.filterScale = SendDlgItemMessage(hWndDlg, IDC_FSCALE,TBM_GETPOS, NULL, NULL);
-    if (temp != OGL.filterScale) OGL.filterChanged = TRUE;
+    OGL.filterScale = SendDlgItemMessage(hWndDlg, IDC_FSCALE, TBM_GETPOS, NULL, NULL);
+    if (temp != OGL.filterScale)
+        OGL.filterChanged = TRUE;
     OGL.fog = (SendDlgItemMessage(hWndDlg, IDC_FOG, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
     OGL.originAdjust = (OGL.textureFilter == 1 ? 0.25 : 0.50);
     OGL.ignoreScissor = (SendDlgItemMessage(hWndDlg, IDC_SCISSOR, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
@@ -228,7 +230,7 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
     if (i == SendMessage(GetDlgItem(hWndDlg, IDC_WINDOWEDRES), CB_GETCOUNT, 0, 0) - 1)
     {
         char val[32];
-        SendMessage(GetDlgItem(hWndDlg,IDC_WINDOWED_X), WM_GETTEXT, 32, (LPARAM)val);
+        SendMessage(GetDlgItem(hWndDlg, IDC_WINDOWED_X), WM_GETTEXT, 32, (LPARAM)val);
         OGL.windowedWidth = atoi(val);
         SendMessage(GetDlgItem(hWndDlg, IDC_WINDOWED_Y), WM_GETTEXT, 32, (LPARAM)val);
         OGL.windowedHeight = atoi(val);
@@ -302,7 +304,7 @@ void UpdateFullscreenConfig(HWND hWndDlg)
             }
         }
         if (((deviceMode.dmPelsWidth != fullscreen.resolution[j].width) ||
-                (deviceMode.dmPelsHeight != fullscreen.resolution[j].height)) &&
+             (deviceMode.dmPelsHeight != fullscreen.resolution[j].height)) &&
             (deviceMode.dmBitsPerPel != fullscreen.selected.bitDepth))
         {
             fullscreen.resolution[fullscreen.numResolutions].width = deviceMode.dmPelsWidth;
@@ -370,7 +372,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
 
         EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &deviceMode);
 
-    // Fill windowed mode resolution
+        // Fill windowed mode resolution
         for (i = 0; i < numWindowedModes; i++)
         {
             if ((deviceMode.dmPelsWidth > windowedModes[i].width) &&
@@ -385,7 +387,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
                 }
             }
         }
-        SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM)"Custom...");
+        SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM) "Custom...");
 
         char val[32];
         sprintf(val, "%d", OGL.windowedWidth);
@@ -399,19 +401,20 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
             SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_SETCURSEL, num, 0);
         }
 
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM)"None");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM)"2xSaI");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM)"xBRZ");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM) "None");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM) "2xSaI");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_ADDSTRING, 0, (LPARAM) "xBRZ");
         SendDlgItemMessage(hWndDlg, IDC_TEXTUREFILTER, CB_SETCURSEL, OGL.textureFilter, 0);
         SendMessage(GetDlgItem(hWndDlg, IDC_FSCALE), TBM_SETRANGE, TRUE, MAKELONG(2, 6));
         SendMessage(GetDlgItem(hWndDlg, IDC_FSCALE), TBM_SETPOS, TRUE, OGL.filterScale);
-        if (OGL.textureFilter == xBRZ) LockTextureBits(hConfigDlg, TRUE);
-    //SendDlgItemMessage( hWndDlg, IDC_ENABLE2XSAI, BM_SETCHECK, OGL.enable2xSaI ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL );
-    // Set forced bilinear check box
+        if (OGL.textureFilter == xBRZ)
+            LockTextureBits(hConfigDlg, TRUE);
+        // SendDlgItemMessage( hWndDlg, IDC_ENABLE2XSAI, BM_SETCHECK, OGL.enable2xSaI ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL );
+        //  Set forced bilinear check box
         SendDlgItemMessage(hWndDlg, IDC_FORCEBILINEAR, BM_SETCHECK, OGL.forceBilinear ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM)"16-bit only (faster)");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM)"16-bit and 32-bit (normal)");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM)"32-bit only (best for 2xSaI)");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "16-bit only (faster)");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "16-bit and 32-bit (normal)");
+        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "32-bit only (best for 2xSaI)");
         SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_SETCURSEL, OGL.textureBitDepth, 0);
         SendDlgItemMessage(hWndDlg, IDC_SCISSOR, BM_SETCHECK, OGL.ignoreScissor ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
         SendDlgItemMessage(hWndDlg, IDC_CLEAR, BM_SETCHECK, OGL.clear_override ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
@@ -422,7 +425,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
         ComboBox_AddString(GetDlgItem(hWndDlg, IDC_COMBINER), "NV_REGISTER_COMBINERS");
         ComboBox_SetCurSel(GetDlgItem(hWndDlg, IDC_COMBINER), OGL.combiner);
 
-    // Enable/disable fog
+        // Enable/disable fog
         SendDlgItemMessage(hWndDlg, IDC_FOG, BM_SETCHECK, OGL.fog ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
         SendDlgItemMessage(hWndDlg, IDC_FRAMEBUFFER, BM_SETCHECK, OGL.frameBufferTextures ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
 

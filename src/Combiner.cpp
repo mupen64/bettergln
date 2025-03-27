@@ -291,8 +291,10 @@ CachedCombiner* Combiner_Compile(u64 mux)
 
 void Combiner_DeleteCombiner(CachedCombiner* combiner)
 {
-    if (combiner->left) Combiner_DeleteCombiner(combiner->left);
-    if (combiner->right) Combiner_DeleteCombiner(combiner->right);
+    if (combiner->left)
+        Combiner_DeleteCombiner(combiner->left);
+    if (combiner->right)
+        Combiner_DeleteCombiner(combiner->right);
 
     free(combiner->compiled);
     free(combiner);
@@ -328,7 +330,7 @@ void Combiner_EndTextureUpdate()
     switch (combiner.compiler)
     {
     case TEXTURE_ENV_COMBINE:
-        //EndTextureUpdate_texture_env_combine();
+        // EndTextureUpdate_texture_env_combine();
         Set_texture_env_combine((TexEnvCombiner*)combiner.current->compiled);
         break;
     }
@@ -340,9 +342,9 @@ DWORD64 Combiner_EncodeCombineMode(WORD saRGB0, WORD sbRGB0, WORD mRGB0, WORD aR
                                    WORD saA1, WORD sbA1, WORD mA1, WORD aA1)
 {
     return (((DWORD64)CCEncodeA[saRGB0] << 52) | ((DWORD64)CCEncodeB[sbRGB0] << 28) | ((DWORD64)CCEncodeC[mRGB0] << 47) | ((DWORD64)CCEncodeD[aRGB0] << 15) |
-        ((DWORD64)ACEncodeA[saA0] << 44) | ((DWORD64)ACEncodeB[sbA0] << 12) | ((DWORD64)ACEncodeC[mA0] << 41) | ((DWORD64)ACEncodeD[aA0] << 9) |
-        ((DWORD64)CCEncodeA[saRGB1] << 37) | ((DWORD64)CCEncodeB[sbRGB1] << 24) | ((DWORD64)CCEncodeC[mRGB1]) | ((DWORD64)CCEncodeD[aRGB1] << 6) |
-        ((DWORD64)ACEncodeA[saA1] << 18) | ((DWORD64)ACEncodeB[sbA1] << 3) | ((DWORD64)ACEncodeC[mA1] << 18) | ((DWORD64)ACEncodeD[aA1]));
+            ((DWORD64)ACEncodeA[saA0] << 44) | ((DWORD64)ACEncodeB[sbA0] << 12) | ((DWORD64)ACEncodeC[mA0] << 41) | ((DWORD64)ACEncodeD[aA0] << 9) |
+            ((DWORD64)CCEncodeA[saRGB1] << 37) | ((DWORD64)CCEncodeB[sbRGB1] << 24) | ((DWORD64)CCEncodeC[mRGB1]) | ((DWORD64)CCEncodeD[aRGB1] << 6) |
+            ((DWORD64)ACEncodeA[saA1] << 18) | ((DWORD64)ACEncodeB[sbA1] << 3) | ((DWORD64)ACEncodeC[mA1] << 18) | ((DWORD64)ACEncodeD[aA1]));
 }
 
 void Combiner_SelectCombine(u64 mux)
