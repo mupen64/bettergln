@@ -1,0 +1,48 @@
+name: MSBuild
+
+on: [ push ]
+
+env:
+  DUMMY: a
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set VERSION_SUFFIX
+        shell: powershell
+        run: |
+          $VERSION_SUFFIX = "-$(git rev-parse --short HEAD)"
+          echo "VERSION_SUFFIX=$VERSION_SUFFIX" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+
+      - name: Display VERSION_SUFFIX
+        shell: powershell
+        run: echo "VERSION_SUFFIX is $env:VERSION_SUFFIX"
+        
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build x86
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run:  msbuild bettergln.sln /p:Configuration=Release /p:Platform=Win32 /m
+          
+      - name: 'Upload x86 SSE2 Release Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mupen-x86-sse2
+          path: build/bettergln-x86-release.dll
+          retention-days: 14
+        
+      - name: Build x64
+        working-directory: ${{env.GITHUB_WORKSPACE}}
+        run: msbuild bettergln.sln /p:Configuration=Release /p:Platform=x64 /m
+
+      - name: 'Upload x64 SSE2 Release Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mupen-x64-sse2
+          path: build/bettergln-x64-release.dll
+          retention-days: 14
