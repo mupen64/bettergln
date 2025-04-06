@@ -27,7 +27,7 @@ bool init_rsp_thread()
         WaitForSingleObject(RSP.threadFinished, INFINITE);
         return true;
     }
-    
+
     for (auto& i : RSP.threadMsg)
     {
         i = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -44,7 +44,7 @@ bool init_rsp_thread()
         MessageBox(hWnd, "Error creating video thread finished event.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
         return false;
     }
-    
+
     RSP.halt = FALSE;
 
     DWORD thread_id;

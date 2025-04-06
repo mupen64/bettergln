@@ -208,7 +208,7 @@ bool OGL_InitContext()
         MessageBox(hWnd, "Error while getting a device context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         return FALSE;
     }
-    
+
     if ((pixelFormat = ChoosePixelFormat(OGL.hDC, &pfd)) == 0)
     {
         MessageBox(hWnd, "Unable to find a suitable pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
@@ -261,18 +261,19 @@ bool OGL_DestroyContext()
 
 bool OGL_Start()
 {
-    
+
     if (OGL.recycle_context)
     {
         if (!OGL.context_initialized)
         {
             OGL_InitContext();
         }
-    } else
+    }
+    else
     {
         OGL_InitContext();
     }
-    
+
     TextureCache_Init();
     FrameBuffer_Init();
     Combiner_Init();
@@ -296,7 +297,7 @@ void OGL_Stop()
     glClear(GL_COLOR_BUFFER_BIT);
     glFinish();
     SwapBuffers(OGL.hDC);
-    
+
     if (!OGL.recycle_context)
     {
         OGL_DestroyContext();
