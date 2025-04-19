@@ -67,57 +67,44 @@ void RSP_LoadMatrix(f32 mtx[4][4], u32 address)
 DWORD WINAPI RSP_ThreadProc(LPVOID)
 {
     SetEvent(RSP.threadFinished);
-    __try
+
+    while (TRUE)
     {
-        while (TRUE)
+        switch (WaitForMultipleObjects(std::size(RSP.threadMsg), RSP.threadMsg, FALSE, INFINITE))
         {
-            switch (WaitForMultipleObjects(std::size(RSP.threadMsg), RSP.threadMsg, FALSE, INFINITE))
-            {
-            case WAIT_OBJECT_0 + RSPMSG_CLOSE:
-                OGL_Stop();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_START:
-                RSP_Init();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_PROCESSDLIST:
-                RSP_ProcessDList();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_UPDATESCREEN:
-                VI_UpdateScreen();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_DESTROYTEXTURES:
-                Combiner_Destroy();
-                FrameBuffer_Destroy();
-                TextureCache_Destroy();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_INITTEXTURES:
-                FrameBuffer_Init();
-                TextureCache_Init();
-                Combiner_Init();
-                gSP.changed = gDP.changed = 0xFFFFFFFF;
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_CAPTURESCREEN:
-                OGL_SaveScreenshot();
-                break;
-            case WAIT_OBJECT_0 + RSPMSG_READPIXELS:
-                OGL_ReadPixels();
-                break;
-            }
-            SetEvent(RSP.threadFinished);
+        case WAIT_OBJECT_0 + RSPMSG_CLOSE:
+            OGL_Stop();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_START:
+            RSP_Init();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_PROCESSDLIST:
+            RSP_ProcessDList();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_UPDATESCREEN:
+            VI_UpdateScreen();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_DESTROYTEXTURES:
+            Combiner_Destroy();
+            FrameBuffer_Destroy();
+            TextureCache_Destroy();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_INITTEXTURES:
+            FrameBuffer_Init();
+            TextureCache_Init();
+            Combiner_Init();
+            gSP.changed = gDP.changed = 0xFFFFFFFF;
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_CAPTURESCREEN:
+            OGL_SaveScreenshot();
+            break;
+        case WAIT_OBJECT_0 + RSPMSG_READPIXELS:
+            OGL_ReadPixels();
+            break;
         }
+        SetEvent(RSP.threadFinished);
     }
-    __except (EXCEPTION_EXECUTE_HANDLER)
-    {
-        char exception[256];
 
-        sprintf(exception, "Win32 exception 0x%08X occured in glN64", GetExceptionCode());
-
-        MessageBox(NULL, exception, PLUGIN_NAME, MB_OK | MB_ICONERROR);
-
-        GBI_Destroy();
-        DepthBuffer_Destroy();
-        OGL_Stop();
-    }
     RSP.thread = NULL;
     return 0;
 }
