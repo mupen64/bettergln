@@ -178,6 +178,12 @@ BOOL CALLBACK FindToolBarProc(HWND hWnd, LPARAM lParam)
 
 EXPORT BOOL CALL InitiateGFX(core_gfx_info Gfx_Info)
 {
+    // HACK: Detect when we're being called to prepare for dll config routine
+    if (Gfx_Info.main_hwnd == Gfx_Info.statusbar_hwnd)
+    {
+        return TRUE;
+    }
+    
     hWnd = (HWND)Gfx_Info.main_hwnd;
     hStatusBar = (HWND)Gfx_Info.statusbar_hwnd;
     hToolBar = NULL;
