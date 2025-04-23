@@ -147,14 +147,14 @@ EXPORT void CALL ChangeWindow(void)
     WaitForSingleObject(RSP.threadFinished, INFINITE);
 }
 
-EXPORT void CALL DllAbout(HWND hParent)
+EXPORT void CALL DllAbout(void* hParent)
 {
-    MessageBox(hParent, "Fork of glN64 by Madghostek and Aurumaker72, originally by Orkin\nGithub: https://github.com/Madghostek/better-gln64", PLUGIN_NAME, MB_OK | MB_ICONINFORMATION);
+    MessageBox((HWND)hParent, "Fork of glN64 by Madghostek and Aurumaker72, originally by Orkin\nGithub: https://github.com/Madghostek/better-gln64", PLUGIN_NAME, MB_OK | MB_ICONINFORMATION);
 }
 
-EXPORT void CALL DllConfig(HWND hParent)
+EXPORT void CALL DllConfig(void* hParent)
 {
-    Config_Show(hParent);
+    Config_Show((HWND)hParent);
 }
 
 EXPORT void CALL GetDllInfo(core_plugin_info* PluginInfo)
