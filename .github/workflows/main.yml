@@ -1,11 +1,20 @@
-name: MSBuild
+name: main
 
 on: [ push ]
 
-env:
-  DUMMY: a
-
 jobs:
+  check-format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: DoozyX/clang-format-lint-action@v0.18.2
+        with:
+          source: './src'
+          exclude: './lib ./tools'
+          extensions: 'h,cpp'
+          clangFormatVersion: 18.1.8
+          style: file
   build:
     runs-on: windows-latest
 
@@ -21,21 +30,21 @@ jobs:
       - name: Display VERSION_SUFFIX
         shell: powershell
         run: echo "VERSION_SUFFIX is $env:VERSION_SUFFIX"
-        
+
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
 
       - name: Build x86
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run:  msbuild bettergln.sln /p:Configuration=Release /p:Platform=Win32 /m
-          
+
       - name: 'Upload x86 SSE2 Release Artifact'
         uses: actions/upload-artifact@v4
         with:
           name: mupen-x86-sse2
           path: build/bettergln-x86-release.dll
           retention-days: 14
-        
+
       - name: Build x64
         working-directory: ${{env.GITHUB_WORKSPACE}}
         run: msbuild bettergln.sln /p:Configuration=Release /p:Platform=x64 /m
