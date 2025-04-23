@@ -1,0 +1,19 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Build and Run In Mupen" type="ShConfigurationType">
+    <option name="SCRIPT_TEXT" value="Copy-Item -Path &quot;build\bettergln-x86-release.dll&quot; -Destination &quot;..\mupen64-rr-lua-\build\Views.Win32\plugin&quot;; Start-Process &quot;..\mupen64-rr-lua-\build\Views.Win32\mupen64-x86-sse2-release.exe&quot;" />
+    <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
+    <option name="SCRIPT_PATH" value="" />
+    <option name="SCRIPT_OPTIONS" value="" />
+    <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
+    <option name="INTERPRETER_PATH" value="powershell.exe" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="EXECUTE_IN_TERMINAL" value="true" />
+    <option name="EXECUTE_SCRIPT_FILE" value="false" />
+    <envs />
+    <method v="2">
+      <option name="Build Solution" enabled="true" />
+    </method>
+  </configuration>
+</component>
