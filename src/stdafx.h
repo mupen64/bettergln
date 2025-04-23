@@ -7,7 +7,7 @@
 #include <process.h>
 #include <malloc.h>
 #include <glew.h>
-#include <math.h>
+#include <cmath>
 #include <cstdint>
 #include <string>
 #include <core_plugin.h>

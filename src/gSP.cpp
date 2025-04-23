@@ -66,8 +66,8 @@ void gSPLoadUcodeEx(u32 uc_start, u32 uc_dstart, u16 uc_dsize)
 
 void gSPCombineMatrices()
 {
-    CopyMatrix(gSP.matrix.combined, gSP.matrix.projection);
-    MultMatrix(gSP.matrix.combined, gSP.matrix.modelView[gSP.matrix.modelViewi]);
+    mat_cpy(gSP.matrix.combined, gSP.matrix.projection);
+    mat_mul(gSP.matrix.combined, gSP.matrix.modelView[gSP.matrix.modelViewi]);
 
     gSP.changed &= ~CHANGED_MATRIX;
 }
@@ -80,7 +80,7 @@ void gSPProcessVertex(u32 v)
     if (gSP.changed & CHANGED_MATRIX)
         gSPCombineMatrices();
 
-    TransformVertex(&gSP.vertices[v].x, gSP.matrix.combined);
+    vert_transform(&gSP.vertices[v].x, gSP.matrix.combined);
 
     if (gSP.matrix.billboard)
     {
@@ -97,8 +97,8 @@ void gSPProcessVertex(u32 v)
 
     if (gSP.geometryMode & G_LIGHTING)
     {
-        TransformVector(&gSP.vertices[v].nx, gSP.matrix.modelView[gSP.matrix.modelViewi]);
-        Normalize(&gSP.vertices[v].nx);
+        vec_transform(&gSP.vertices[v].nx, gSP.matrix.modelView[gSP.matrix.modelViewi]);
+        vec_normalize(&gSP.vertices[v].nx);
 
         r = gSP.lights[gSP.numLights].r;
         g = gSP.lights[gSP.numLights].g;
@@ -106,7 +106,7 @@ void gSPProcessVertex(u32 v)
 
         for (int i = 0; i < gSP.numLights; i++)
         {
-            intensity = DotProduct(&gSP.vertices[v].nx, &gSP.lights[i].x);
+            intensity = dot_product(&gSP.vertices[v].nx, &gSP.lights[i].x);
 
             if (intensity < 0.0f)
                 intensity = 0.0f;
@@ -122,9 +122,9 @@ void gSPProcessVertex(u32 v)
 
         if (gSP.geometryMode & G_TEXTURE_GEN)
         {
-            TransformVector(&gSP.vertices[v].nx, gSP.matrix.projection);
+            vec_transform(&gSP.vertices[v].nx, gSP.matrix.projection);
 
-            Normalize(&gSP.vertices[v].nx);
+            vec_normalize(&gSP.vertices[v].nx);
 
             if (gSP.geometryMode & G_TEXTURE_GEN_LINEAR)
             {
@@ -193,15 +193,15 @@ void gSPMatrix(u32 matrix, u8 param)
     if (param & G_MTX_PROJECTION)
     {
         if (param & G_MTX_LOAD)
-            CopyMatrix(gSP.matrix.projection, mtx);
+            mat_cpy(gSP.matrix.projection, mtx);
         else
-            MultMatrix(gSP.matrix.projection, mtx);
+            mat_mul(gSP.matrix.projection, mtx);
     }
     else
     {
         if ((param & G_MTX_PUSH) && (gSP.matrix.modelViewi < (gSP.matrix.stackSize - 1)))
         {
-            CopyMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi + 1], gSP.matrix.modelView[gSP.matrix.modelViewi]);
+            mat_cpy(gSP.matrix.modelView[gSP.matrix.modelViewi + 1], gSP.matrix.modelView[gSP.matrix.modelViewi]);
             gSP.matrix.modelViewi++;
         }
 #ifdef DEBUG
@@ -210,9 +210,9 @@ void gSPMatrix(u32 matrix, u8 param)
 #endif
 
         if (param & G_MTX_LOAD)
-            CopyMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
+            mat_cpy(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
         else
-            MultMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
+            mat_mul(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
     }
 
     gSP.changed |= CHANGED_MATRIX;
@@ -255,13 +255,13 @@ void gSPDMAMatrix(u32 matrix, u8 index, u8 multiply)
 
     if (multiply)
     {
-        CopyMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi], gSP.matrix.modelView[0]);
-        MultMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
+        mat_cpy(gSP.matrix.modelView[gSP.matrix.modelViewi], gSP.matrix.modelView[0]);
+        mat_mul(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
     }
     else
-        CopyMatrix(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
+        mat_cpy(gSP.matrix.modelView[gSP.matrix.modelViewi], mtx);
 
-    CopyMatrix(gSP.matrix.projection, identityMatrix);
+    mat_cpy(gSP.matrix.projection, identityMatrix);
 
 
     gSP.changed |= CHANGED_MATRIX;
@@ -364,7 +364,7 @@ void gSPLight(u32 l, s32 n)
         gSP.lights[n].y = light->y;
         gSP.lights[n].z = light->z;
 
-        Normalize(&gSP.lights[n].x);
+        vec_normalize(&gSP.lights[n].x);
     }
 
 #ifdef DEBUG
