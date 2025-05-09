@@ -26,31 +26,25 @@
     </PropertyGroup>
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <PropertyGroup>
         <ConfigurationType>DynamicLibrary</ConfigurationType>
         <CharacterSet>MultiByte</CharacterSet>
         <PlatformToolset>v143</PlatformToolset>
+    </PropertyGroup>
+    
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
         <WholeProgramOptimization>false</WholeProgramOptimization>
         <UseDebugLibraries>true</UseDebugLibraries>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <CharacterSet>MultiByte</CharacterSet>
-        <PlatformToolset>v143</PlatformToolset>
         <WholeProgramOptimization>true</WholeProgramOptimization>
         <UseDebugLibraries>false</UseDebugLibraries>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <CharacterSet>MultiByte</CharacterSet>
-        <PlatformToolset>ClangCL</PlatformToolset>
         <WholeProgramOptimization>false</WholeProgramOptimization>
         <UseDebugLibraries>true</UseDebugLibraries>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-        <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <CharacterSet>MultiByte</CharacterSet>
-        <PlatformToolset>ClangCL</PlatformToolset>
         <WholeProgramOptimization>true</WholeProgramOptimization>
         <UseDebugLibraries>false</UseDebugLibraries>
     </PropertyGroup>
@@ -97,6 +91,11 @@
         <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectName)-x64-debug</TargetName>
         <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectName)-x64-release</TargetName>
     </PropertyGroup>
+    <ItemDefinitionGroup>
+        <ClCompile>
+            <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+        </ClCompile>
+    </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>
             <Optimization>Disabled</Optimization>
@@ -117,7 +116,7 @@
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
         <ClCompile>
-            <Optimization>Full</Optimization>
+            <Optimization>MaxSpeed</Optimization>
             <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
             <IntrinsicFunctions>true</IntrinsicFunctions>
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
@@ -153,7 +152,6 @@
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
-            <ProgramDatabaseFile>$(OutDir)New glNintendo64().pdb</ProgramDatabaseFile>
             <SubSystem>Windows</SubSystem>
             <AdditionalLibraryDirectories>lib\glew-x64;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
             <AdditionalDependencies>opengl32.lib;glu32.lib;winmm.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -161,7 +159,7 @@
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
         <ClCompile>
-            <Optimization>Full</Optimization>
+            <Optimization>MaxSpeed</Optimization>
             <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
             <IntrinsicFunctions>true</IntrinsicFunctions>
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
