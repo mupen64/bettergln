@@ -23,6 +23,6 @@ extern char* screenDirectory;
 #define PLUGIN_TARGET "-release"
 #endif
 
-#define PLUGIN_NAME "better-gln64 " PLUGIN_VERSION PLUGIN_ARCH PLUGIN_TARGET
+#define PLUGIN_NAME "bettergln " PLUGIN_VERSION PLUGIN_ARCH PLUGIN_TARGET
 
 #endif

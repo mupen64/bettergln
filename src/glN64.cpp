@@ -149,7 +149,8 @@ EXPORT void CALL ChangeWindow(void)
 
 EXPORT void CALL DllAbout(void* hParent)
 {
-    MessageBox((HWND)hParent, "Fork of glN64 by Madghostek and Aurumaker72, originally by Orkin\nGithub: https://github.com/Madghostek/better-gln64", PLUGIN_NAME, MB_OK | MB_ICONINFORMATION);
+    const auto msg = PLUGIN_NAME "\nPart of the Mupen64 project family.\n\nhttps://github.com/mupen64/bettergln";
+    MessageBox((HWND)hParent, msg, PLUGIN_NAME, MB_OK | MB_ICONINFORMATION);
 }
 
 EXPORT void CALL DllConfig(void* hParent)
@@ -183,7 +184,7 @@ EXPORT BOOL CALL InitiateGFX(core_gfx_info Gfx_Info)
     {
         return TRUE;
     }
-    
+
     hWnd = (HWND)Gfx_Info.main_hwnd;
     hStatusBar = (HWND)Gfx_Info.statusbar_hwnd;
     hToolBar = NULL;
