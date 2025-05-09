@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">
-  better-gln64
+  bettergln
 </h1>
 
 <p align="center">
