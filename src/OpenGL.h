@@ -54,11 +54,14 @@ struct GLInfo {
     int maxTextureUnits; // TNT = 2, GeForce = 2-4, Rage 128 = 2, Radeon = 3-6
     int maxGeneralCombiners;
 
-    int textureFilter; // 0 - None, 1 - 2xSai, 2 - xBRZ
+    TextureFilter textureFilter = TextureFilter::None;
     BOOL frameBufferTextures;
     int textureBitDepth;
     float originAdjust;
-    int filterScale = 4; // for xBRZ
+    // 2xSAI: 2
+    // xBRZ: 2, 3, 4, 5, 6
+    // Hqx: 2, 3, 4
+    int filterScale = 4;
     BOOL filterChanged = FALSE; // for cache
 
     GLVertex vertices[256];

@@ -94,6 +94,7 @@
     <ItemDefinitionGroup>
         <ClCompile>
             <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+            <AdditionalIncludeDirectories>lib;lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -105,7 +106,6 @@
             <WarningLevel>Level3</WarningLevel>
             <PrecompiledHeader>Use</PrecompiledHeader>
             <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-            <AdditionalIncludeDirectories>lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -128,7 +128,6 @@
             <WarningLevel>Level3</WarningLevel>
             <PrecompiledHeader>Use</PrecompiledHeader>
             <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-            <AdditionalIncludeDirectories>lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -148,7 +147,6 @@
             <WarningLevel>Level3</WarningLevel>
             <PrecompiledHeader>Use</PrecompiledHeader>
             <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
-            <AdditionalIncludeDirectories>lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -171,7 +169,6 @@
             <WarningLevel>Level3</WarningLevel>
             <PrecompiledHeader>Use</PrecompiledHeader>
             <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-            <AdditionalIncludeDirectories>lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
         <Link>
             <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -188,6 +185,18 @@
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+        </ClCompile>
+        <ClCompile Include="lib\hqx\init.c">
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
+        </ClCompile>
+        <ClCompile Include="lib\hqx\hq4x.c">
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
+        </ClCompile>
+        <ClCompile Include="lib\hqx\hq3x.c">
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
+        </ClCompile>
+        <ClCompile Include="lib\hqx\hq2x.c">
+            <PrecompiledHeader>NotUsing</PrecompiledHeader>
         </ClCompile>
         <ClCompile Include="src\xBRZ\xbrz.cpp" >
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>

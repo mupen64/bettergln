@@ -12,6 +12,7 @@
 #include "FrameBuffer.h"
 #include "DepthBuffer.h"
 #include "GBI.h"
+#include <hqx/hqx.h>
 
 RSPInfo RSP;
 
@@ -66,6 +67,8 @@ void RSP_LoadMatrix(f32 mtx[4][4], u32 address)
 
 DWORD WINAPI RSP_ThreadProc(LPVOID)
 {
+    hqxInit();
+    
     SetEvent(RSP.threadFinished);
 
     while (TRUE)
