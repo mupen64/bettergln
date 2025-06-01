@@ -525,15 +525,15 @@ void TextureCache_LoadBackground(CachedTexture* texInfo)
         }
     }
 
-    if (cache.textureFilter)
+    if (cache.textureFilter != TextureFilter::None)
     {
-        if (cache.textureFilter == SaI)
+        if (cache.textureFilter == TextureFilter::SaI)
             OGL.filterScale = 2;
         texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
 
         scaledDest = (u32*)malloc(texInfo->textureBytes);
 
-        if (cache.textureFilter == xBRZ)
+        if (cache.textureFilter == TextureFilter::xBRZ)
             xbrz::scale(OGL.filterScale, (uint32_t*)dest, (uint32_t*)scaledDest, texInfo->realWidth, texInfo->realHeight, xbrz::ColorFormat::ARGB);
         else if (glInternalFormat == GL_RGBA8)
         {
@@ -673,15 +673,15 @@ void TextureCache_Load(CachedTexture* texInfo)
         }
     }
 
-    if (cache.textureFilter)
+    if (cache.textureFilter != TextureFilter::None)
     {
-        if (cache.textureFilter == SaI)
+        if (cache.textureFilter == TextureFilter::SaI)
             OGL.filterScale = 2;
         texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
 
         scaledDest = (u32*)malloc(texInfo->textureBytes);
 
-        if (cache.textureFilter == xBRZ)
+        if (cache.textureFilter == TextureFilter::xBRZ)
             xbrz::scale(OGL.filterScale, (uint32_t*)dest, (uint32_t*)scaledDest, texInfo->realWidth, texInfo->realHeight, xbrz::ColorFormat::ARGB);
         else if (glInternalFormat == GL_RGBA8)
         {
@@ -1117,8 +1117,8 @@ void TextureCache_Update(u32 t)
     cache.current[t]->shiftScaleS = 1.0f;
     cache.current[t]->shiftScaleT = 1.0f;
 
-    cache.current[t]->offsetS = OGL.textureFilter == 1 ? 0.25f : 0.5f; // this needs to change?
-    cache.current[t]->offsetT = OGL.textureFilter == 1 ? 0.25f : 0.5f;
+    cache.current[t]->offsetS = OGL.textureFilter == TextureFilter::SaI ? 0.25f : 0.5f; // this needs to change?
+    cache.current[t]->offsetT = OGL.textureFilter == TextureFilter::SaI ? 0.25f : 0.5f;
 
     if (gSP.textureTile[t]->shifts > 10)
         cache.current[t]->shiftScaleS = (f32)(1 << (16 - gSP.textureTile[t]->shifts));

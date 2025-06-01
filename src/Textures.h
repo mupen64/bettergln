@@ -4,7 +4,7 @@
 // #include <gl/gl.h>
 #include "convert.h"
 
-enum FILTERS {
+enum class TextureFilter {
     None,
     SaI,
     xBRZ,
@@ -50,7 +50,8 @@ struct TextureCache {
     GLuint glNoiseNames[32];
     // GLuint			glDummyName;
     CachedTexture* dummy;
-    u32 textureFilter, bitDepth;
+    TextureFilter textureFilter;
+    u32 bitDepth;
 };
 
 extern TextureCache cache;
