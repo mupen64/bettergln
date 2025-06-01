@@ -8,6 +8,7 @@ enum class TextureFilter {
     None,
     SaI,
     xBRZ,
+    Hqx,
 };
 
 struct CachedTexture {

@@ -12,6 +12,7 @@
 #include "FrameBuffer.h"
 
 #include "xBRZ/xbrz.h"
+#include <hqx/hqx.h>
 
 TextureCache cache;
 
@@ -292,6 +293,74 @@ void TextureCache_Init()
     CRC_BuildTable();
 }
 
+static void TextureCache_Scale(CachedTexture* tex_info, uint32_t* src, const GLuint gl_internal_format, const GLuint gl_type)
+{
+    if (cache.textureFilter == TextureFilter::None)
+    {
+        glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, tex_info->realWidth, tex_info->realHeight, 0, GL_RGBA, gl_type, src);
+        free(src);
+        return;
+    }
+
+    if (cache.textureFilter == TextureFilter::SaI)
+    {
+        OGL.filterScale = 2;
+    }
+    if (cache.textureFilter == TextureFilter::Hqx)
+    {
+        OGL.filterScale = 4;
+    }
+
+    tex_info->textureBytes *= OGL.filterScale * OGL.filterScale;
+
+    auto dst = (u32*)malloc(tex_info->textureBytes);
+
+    if (cache.textureFilter == TextureFilter::xBRZ)
+    {
+        xbrz::scale(OGL.filterScale, src, dst, tex_info->realWidth, tex_info->realHeight, xbrz::ColorFormat::ARGB);
+    }
+
+    if (cache.textureFilter == TextureFilter::SaI)
+    {
+        if (gl_internal_format == GL_RGBA8)
+            _2xSaI8888(src, dst, tex_info->realWidth, tex_info->realHeight, 1, 1);
+        else if (gl_internal_format == GL_RGBA4)
+            _2xSaI4444((u16*)src, (u16*)dst, tex_info->realWidth, tex_info->realHeight, tex_info->clampS, tex_info->clampT);
+        else
+            _2xSaI5551((u16*)src, (u16*)dst, tex_info->realWidth, tex_info->realHeight, tex_info->clampS, tex_info->clampT);
+    }
+
+    if (cache.textureFilter == TextureFilter::Hqx)
+    {
+        int bpp = 2;
+        if (gl_internal_format == GL_RGBA8)
+            bpp = 4;
+        else if (gl_internal_format == GL_RGBA4)
+            bpp = 4;
+
+        int src_pitch = tex_info->realWidth * bpp;
+        int dst_pitch = tex_info->realWidth * bpp * OGL.filterScale;
+
+        switch (OGL.filterScale)
+        {
+        case 2:
+            hq2x_32_rb(src, src_pitch, dst, dst_pitch, tex_info->realWidth, tex_info->realHeight);
+            break;
+        case 3:
+            hq3x_32_rb(src, src_pitch, dst, dst_pitch, tex_info->realWidth, tex_info->realHeight);
+            break;
+        case 4:
+            hq4x_32_rb(src, src_pitch, dst, dst_pitch, tex_info->realWidth, tex_info->realHeight);
+            break;
+        }
+    }
+
+    glTexImage2D(GL_TEXTURE_2D, 0, gl_internal_format, tex_info->realWidth * OGL.filterScale, tex_info->realHeight * OGL.filterScale, 0, GL_RGBA, gl_type, dst);
+
+    free(src);
+    free(dst);
+}
+
 BOOL TextureCache_Verify()
 {
     s16 i = 0;
@@ -519,41 +588,13 @@ void TextureCache_LoadBackground(CachedTexture* texInfo)
             tx = min(x, clampSClamp);
 
             if (glInternalFormat == GL_RGBA8)
-                ((u32*)dest)[j++] = GetTexel((u64*)src, tx, 0, texInfo->palette);
+                dest[j++] = GetTexel((u64*)src, tx, 0, texInfo->palette);
             else
                 ((u16*)dest)[j++] = GetTexel((u64*)src, tx, 0, texInfo->palette);
         }
     }
 
-    if (cache.textureFilter != TextureFilter::None)
-    {
-        if (cache.textureFilter == TextureFilter::SaI)
-            OGL.filterScale = 2;
-        texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
-
-        scaledDest = (u32*)malloc(texInfo->textureBytes);
-
-        if (cache.textureFilter == TextureFilter::xBRZ)
-            xbrz::scale(OGL.filterScale, (uint32_t*)dest, (uint32_t*)scaledDest, texInfo->realWidth, texInfo->realHeight, xbrz::ColorFormat::ARGB);
-        else if (glInternalFormat == GL_RGBA8)
-        {
-            _2xSaI8888((u32*)dest, (u32*)scaledDest, texInfo->realWidth, texInfo->realHeight, 1, 1);
-        }
-        else if (glInternalFormat == GL_RGBA4)
-            _2xSaI4444((u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, texInfo->clampS, texInfo->clampT);
-        else
-            _2xSaI5551((u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, texInfo->clampS, texInfo->clampT);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth * OGL.filterScale, texInfo->realHeight * OGL.filterScale, 0, GL_RGBA, glType, scaledDest);
-
-        free(dest);
-        free(scaledDest);
-    }
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth, texInfo->realHeight, 0, GL_RGBA, glType, dest);
-        free(dest);
-    }
+    TextureCache_Scale(texInfo, dest, glInternalFormat, glType);
 }
 
 void TextureCache_Load(CachedTexture* texInfo)
@@ -667,41 +708,13 @@ void TextureCache_Load(CachedTexture* texInfo)
                 tx ^= maskSMask;
 
             if (glInternalFormat == GL_RGBA8)
-                ((u32*)dest)[j++] = GetTexel(src, tx, i, texInfo->palette);
+                dest[j++] = GetTexel(src, tx, i, texInfo->palette);
             else
                 ((u16*)dest)[j++] = GetTexel(src, tx, i, texInfo->palette);
         }
     }
 
-    if (cache.textureFilter != TextureFilter::None)
-    {
-        if (cache.textureFilter == TextureFilter::SaI)
-            OGL.filterScale = 2;
-        texInfo->textureBytes *= OGL.filterScale * OGL.filterScale;
-
-        scaledDest = (u32*)malloc(texInfo->textureBytes);
-
-        if (cache.textureFilter == TextureFilter::xBRZ)
-            xbrz::scale(OGL.filterScale, (uint32_t*)dest, (uint32_t*)scaledDest, texInfo->realWidth, texInfo->realHeight, xbrz::ColorFormat::ARGB);
-        else if (glInternalFormat == GL_RGBA8)
-        {
-            _2xSaI8888((u32*)dest, (u32*)scaledDest, texInfo->realWidth, texInfo->realHeight, 1, 1);
-        }
-        else if (glInternalFormat == GL_RGBA8)
-            _2xSaI4444((u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, 1, 1);
-        else
-            _2xSaI5551((u16*)dest, (u16*)scaledDest, texInfo->realWidth, texInfo->realHeight, 1, 1);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth * OGL.filterScale, texInfo->realHeight * OGL.filterScale, 0, GL_RGBA, glType, scaledDest);
-
-        free(dest);
-        free(scaledDest);
-    }
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, glInternalFormat, texInfo->realWidth, texInfo->realHeight, 0, GL_RGBA, glType, dest);
-        free(dest);
-    }
+    TextureCache_Scale(texInfo, dest, glInternalFormat, glType);
 }
 
 u32 TextureCache_CalculateCRC(u32 t, u32 width, u32 height)
@@ -710,7 +723,7 @@ u32 TextureCache_CalculateCRC(u32 t, u32 width, u32 height)
     u32 y, i, bpl, lineBytes, line;
     u64* src;
 
-    src = (u64*)&TMEM[gSP.textureTile[t]->tmem];
+    src = &TMEM[gSP.textureTile[t]->tmem];
     bpl = width << gSP.textureTile[t]->size >> 1;
     lineBytes = gSP.textureTile[t]->line << 3;
 

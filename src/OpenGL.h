@@ -58,7 +58,10 @@ struct GLInfo {
     BOOL frameBufferTextures;
     int textureBitDepth;
     float originAdjust;
-    int filterScale = 4; // for xBRZ
+    // 2xSAI: 2
+    // xBRZ: 2, 3, 4, 5, 6
+    // Hqx: 2, 3, 4
+    int filterScale = 4;
     BOOL filterChanged = FALSE; // for cache
 
     GLVertex vertices[256];
