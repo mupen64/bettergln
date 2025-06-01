@@ -101,6 +101,8 @@ INT_PTR CALLBACK MicrocodeDlgProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM
     switch (uMsg)
     {
     case WM_INITDIALOG:
+        EnableMenuItem(GetSystemMenu(hWndDlg, FALSE), SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED);
+
         for (int i = 0; i < numMicrocodeTypes; i++)
         {
             SendDlgItemMessage(hWndDlg, IDC_MICROCODE, CB_ADDSTRING, 0, (LPARAM)MicrocodeTypes[i]);
@@ -111,16 +113,13 @@ INT_PTR CALLBACK MicrocodeDlgProc(HWND hWndDlg, UINT uMsg, WPARAM wParam, LPARAM
         sprintf(text, "Microcode CRC:\t\t0x%08x\r\nMicrocode Data CRC:\t0x%08x\r\nMicrocode Text:\t\t%s", uc_crc, uc_dcrc, uc_str);
         SendDlgItemMessage(hWndDlg, IDC_TEXTBOX, WM_SETTEXT, NULL, (LPARAM)text);
         return TRUE;
-
+    case WM_CLOSE:
+        return TRUE;
     case WM_COMMAND:
         switch (LOWORD(wParam))
         {
         case IDOK:
             EndDialog(hWndDlg, SendDlgItemMessage(hWndDlg, IDC_MICROCODE, CB_GETCURSEL, 0, 0));
-            return TRUE;
-
-        case IDCANCEL:
-            EndDialog(hWndDlg, NONE);
             return TRUE;
         }
         break;
