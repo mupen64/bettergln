@@ -52,7 +52,6 @@ struct TextureCache {
     // GLuint			glDummyName;
     CachedTexture* dummy;
     TextureFilter textureFilter;
-    u32 bitDepth;
 };
 
 extern TextureCache cache;

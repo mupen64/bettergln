@@ -233,7 +233,6 @@ void TextureCache_Init()
     cache.numCached = 0;
     cache.cachedBytes = 0;
     cache.textureFilter = OGL.textureFilter;
-    cache.bitDepth = OGL.textureBitDepth;
 
     glGenTextures(32, cache.glNoiseNames);
 
@@ -524,47 +523,22 @@ void TextureCache_LoadBackground(CachedTexture* texInfo)
     GLuint glInternalFormat;
     GLenum glType;
 
-    if (((imageFormat[texInfo->size][texInfo->format].autoFormat == GL_RGBA8) ||
-         ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) &&
-        (cache.bitDepth != 0))
+    texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
+    if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
     {
-        texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
-        if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
-        {
-            if (texInfo->size == G_IM_SIZ_4b)
-                GetTexel = GetCI4IA_RGBA8888;
-            else
-                GetTexel = GetCI8IA_RGBA8888;
-
-            glInternalFormat = GL_RGBA8;
-            glType = GL_UNSIGNED_BYTE;
-        }
+        if (texInfo->size == G_IM_SIZ_4b)
+            GetTexel = GetCI4IA_RGBA8888;
         else
-        {
-            GetTexel = imageFormat[texInfo->size][texInfo->format].Get32;
-            glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat32;
-            glType = imageFormat[texInfo->size][texInfo->format].glType32;
-        }
+            GetTexel = GetCI8IA_RGBA8888;
+
+        glInternalFormat = GL_RGBA8;
+        glType = GL_UNSIGNED_BYTE;
     }
     else
     {
-        texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 1;
-        if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
-        {
-            if (texInfo->size == G_IM_SIZ_4b)
-                GetTexel = GetCI4IA_RGBA4444;
-            else
-                GetTexel = GetCI8IA_RGBA4444;
-
-            glInternalFormat = GL_RGBA4;
-            glType = GL_UNSIGNED_SHORT_4_4_4_4_EXT;
-        }
-        else
-        {
-            GetTexel = imageFormat[texInfo->size][texInfo->format].Get16;
-            glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat16;
-            glType = imageFormat[texInfo->size][texInfo->format].glType16;
-        }
+        GetTexel = imageFormat[texInfo->size][texInfo->format].Get32;
+        glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat32;
+        glType = imageFormat[texInfo->size][texInfo->format].glType32;
     }
 
     bpl = gSP.bgImage.width << gSP.bgImage.size >> 1;
@@ -609,47 +583,22 @@ void TextureCache_Load(CachedTexture* texInfo)
     GLuint glInternalFormat;
     GLenum glType;
 
-    if (((imageFormat[texInfo->size][texInfo->format].autoFormat == GL_RGBA8) ||
-         ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16)) || (cache.bitDepth == 2)) &&
-        (cache.bitDepth != 0))
+    texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
+    if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
     {
-        texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 2;
-        if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
-        {
-            if (texInfo->size == G_IM_SIZ_4b)
-                GetTexel = GetCI4IA_RGBA8888;
-            else
-                GetTexel = GetCI8IA_RGBA8888;
-
-            glInternalFormat = GL_RGBA8;
-            glType = GL_UNSIGNED_BYTE;
-        }
+        if (texInfo->size == G_IM_SIZ_4b)
+            GetTexel = GetCI4IA_RGBA8888;
         else
-        {
-            GetTexel = imageFormat[texInfo->size][texInfo->format].Get32;
-            glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat32;
-            glType = imageFormat[texInfo->size][texInfo->format].glType32;
-        }
+            GetTexel = GetCI8IA_RGBA8888;
+
+        glInternalFormat = GL_RGBA8;
+        glType = GL_UNSIGNED_BYTE;
     }
     else
     {
-        texInfo->textureBytes = (texInfo->realWidth * texInfo->realHeight) << 1;
-        if ((texInfo->format == G_IM_FMT_CI) && (gDP.otherMode.textureLUT == G_TT_IA16))
-        {
-            if (texInfo->size == G_IM_SIZ_4b)
-                GetTexel = GetCI4IA_RGBA4444;
-            else
-                GetTexel = GetCI8IA_RGBA4444;
-
-            glInternalFormat = GL_RGBA4;
-            glType = GL_UNSIGNED_SHORT_4_4_4_4_EXT;
-        }
-        else
-        {
-            GetTexel = imageFormat[texInfo->size][texInfo->format].Get16;
-            glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat16;
-            glType = imageFormat[texInfo->size][texInfo->format].glType16;
-        }
+        GetTexel = imageFormat[texInfo->size][texInfo->format].Get32;
+        glInternalFormat = imageFormat[texInfo->size][texInfo->format].glInternalFormat32;
+        glType = imageFormat[texInfo->size][texInfo->format].glType32;
     }
 
     dest = (u32*)malloc(texInfo->textureBytes);
@@ -888,12 +837,6 @@ void TextureCache_Update(u32 t)
         TextureCache_Destroy();
         TextureCache_Init();
         OGL.filterChanged = FALSE;
-    }
-
-    if (cache.bitDepth != OGL.textureBitDepth)
-    {
-        TextureCache_Destroy();
-        TextureCache_Init();
     }
 
     if (gDP.textureMode == TEXTUREMODE_BGIMAGE)

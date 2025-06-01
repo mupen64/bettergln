@@ -56,7 +56,6 @@ struct GLInfo {
 
     TextureFilter textureFilter = TextureFilter::None;
     BOOL frameBufferTextures;
-    int textureBitDepth;
     float originAdjust;
     // 2xSAI: 2
     // xBRZ: 2, 3, 4, 5, 6

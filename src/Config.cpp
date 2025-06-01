@@ -55,20 +55,6 @@ void EnableCustom(HWND hWndDlg, BOOL enable)
     EnableWindow(GetDlgItem(hWndDlg, IDC_WINDOWED_Y), enable);
 }
 
-void enable_filter_scale_section(HWND hdlg, BOOL enable)
-{
-    if (!enable)
-    {
-        SendMessage(GetDlgItem(hdlg, IDC_TEXTUREBPP), CB_SETCURSEL, 2, 0);
-        EnableWindow(GetDlgItem(hdlg, IDC_TEXTUREBPP), FALSE);
-    }
-    else
-    {
-        EnableWindow(GetDlgItem(hdlg, IDC_TEXTUREBPP), TRUE);
-        SendMessage(GetDlgItem(hdlg, IDC_TEXTUREBPP), TBM_SETPOS, TRUE, 2);
-    }
-}
-
 void Config_LoadConfig()
 {
     DWORD value, size;
@@ -106,10 +92,7 @@ void Config_LoadConfig()
 
         RegQueryValueEx(hKey, "Dithered Alpha Testing", 0, NULL, (BYTE*)&value, &size);
         OGL.usePolygonStipple = value ? TRUE : FALSE;
-
-        RegQueryValueEx(hKey, "Texture Bit Depth", 0, NULL, (BYTE*)&value, &size);
-        OGL.textureBitDepth = value;
-
+        
         RegQueryValueEx(hKey, "Ignore Scissor", 0, NULL, (BYTE*)&value, &size);
         OGL.ignoreScissor = value ? TRUE : FALSE;
 
@@ -146,7 +129,6 @@ void Config_LoadConfig()
         cache.maxBytes = 32 * 1048576;
         OGL.frameBufferTextures = FALSE;
         OGL.textureFilter = TextureFilter::None;
-        OGL.textureBitDepth = 1;
         OGL.usePolygonStipple = FALSE;
     }
 }
@@ -185,9 +167,6 @@ void Config_SaveConfig()
 
     value = OGL.usePolygonStipple ? 1 : 0;
     RegSetValueEx(hKey, "Dithered Alpha Testing", 0, REG_DWORD, (BYTE*)&value, 4);
-
-    value = OGL.textureBitDepth;
-    RegSetValueEx(hKey, "Texture Bit Depth", 0, REG_DWORD, (BYTE*)&value, 4);
 
     value = OGL.ignoreScissor ? 1 : 0;
     RegSetValueEx(hKey, "Ignore Scissor", 0, REG_DWORD, (BYTE*)&value, 4);
@@ -231,10 +210,7 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
     OGL.fullscreenWidth = fullscreen.resolution[i].width;
     OGL.fullscreenHeight = fullscreen.resolution[i].height;
     OGL.fullscreenRefresh = fullscreen.refreshRate[SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_GETCURSEL, 0, 0)];
-
-    i = SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_GETCURSEL, 0, 0);
-    OGL.textureBitDepth = i;
-
+    
     i = SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_GETCURSEL, 0, 0);
     if (i == SendMessage(GetDlgItem(hWndDlg, IDC_WINDOWEDRES), CB_GETCOUNT, 0, 0) - 1)
     {
@@ -419,10 +395,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
         SendMessage(GetDlgItem(hWndDlg, IDC_FSCALE), TBM_SETPOS, TRUE, OGL.filterScale);
 
         SendDlgItemMessage(hWndDlg, IDC_FORCEBILINEAR, BM_SETCHECK, OGL.forceBilinear ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "16-bit only (faster)");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "16-bit and 32-bit (normal)");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_ADDSTRING, 0, (LPARAM) "32-bit only (best for 2xSaI)");
-        SendDlgItemMessage(hWndDlg, IDC_TEXTUREBPP, CB_SETCURSEL, OGL.textureBitDepth, 0);
         SendDlgItemMessage(hWndDlg, IDC_SCISSOR, BM_SETCHECK, OGL.ignoreScissor ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
         SendDlgItemMessage(hWndDlg, IDC_CLEAR, BM_SETCHECK, OGL.clear_override ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
 
@@ -524,8 +496,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
 
                 SendMessage(GetDlgItem(hWndDlg, IDC_FSCALE), TBM_SETRANGE, TRUE, MAKELONG(min_scale, max_scale));
                 EnableWindow(GetDlgItem(hWndDlg, IDC_FSCALE), min_scale != max_scale);
-
-                enable_filter_scale_section(hWndDlg, filter != TextureFilter::None && filter != TextureFilter::SaI);
             }
         }
     }

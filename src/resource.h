@@ -1333,7 +1333,6 @@
 #define IDC_TEXTUREFILTER2 1062
 #define rad8 0x0427
 #define IDC_COMBO1 1064
-#define IDC_TEXTUREBPP 1064
 #define rad9 0x0428
 #define rad10 0x0429
 #define IDC_FOG 1066
