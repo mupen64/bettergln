@@ -349,17 +349,6 @@ void gDPSetColorImage(u32 format, u32 size, u32 width, u32 address)
 
     if (gDP.colorImage.address != address)
     {
-        if (OGL.frameBufferTextures)
-        {
-            if (gDP.colorImage.changed)
-                FrameBuffer_SaveBuffer(gDP.colorImage.address, gDP.colorImage.size, gDP.colorImage.width, gDP.colorImage.height);
-
-            if (address != gDP.depthImageAddress)
-                FrameBuffer_RestoreBuffer(address, size, width);
-
-            // OGL_ClearDepthBuffer();
-        }
-
         gDP.colorImage.changed = FALSE;
 
         if (width == VI.width)
@@ -588,20 +577,6 @@ void gDPLoadTile(u32 tile, u32 uls, u32 ult, u32 lrs, u32 lrt)
         return;
     }
 
-    if (OGL.frameBufferTextures)
-    {
-        FrameBuffer* buffer;
-        if (((buffer = FrameBuffer_FindBuffer(address)) != NULL) &&
-            ((*(u32*)&RDRAM[buffer->startAddress] & 0xFFFEFFFE) == (buffer->startAddress & 0xFFFEFFFE)))
-        {
-            gDP.loadTile->frameBuffer = buffer;
-            gDP.textureMode = TEXTUREMODE_FRAMEBUFFER;
-            gDP.loadType = LOADTYPE_TILE;
-            gDP.changed |= CHANGED_TMEM;
-            return;
-        }
-    }
-
     // Line given for 32-bit is half what it seems it should since they split the
     // high and low words. I'm cheating by putting them together.
     if (gDP.loadTile->size == G_IM_SIZ_32b)
@@ -647,27 +622,7 @@ void gDPLoadBlock(u32 tile, u32 uls, u32 ult, u32 lrs, u32 dxt)
         ((address + bytes) > RDRAMSize) ||
         (((gDP.loadTile->tmem << 3) + bytes) > 4096))
     {
-#ifdef DEBUG
-        DebugMsg(DEBUG_HIGH | DEBUG_ERROR | DEBUG_TEXTURE, "// Attempting to load texture block out of range\n");
-        DebugMsg(DEBUG_HIGH | DEBUG_HANDLED | DEBUG_TEXTURE, "gDPLoadBlock( %i, %i, %i, %i, %i );\n",
-                 tile, uls, ult, lrs, dxt);
-#endif
-        //		bytes = min( bytes, min( RDRAMSize - gDP.textureImage.address, 4096 - (gDP.loadTile->tmem << 3) ) );
         return;
-    }
-
-    if (OGL.frameBufferTextures)
-    {
-        FrameBuffer* buffer;
-        if (((buffer = FrameBuffer_FindBuffer(address)) != NULL) &&
-            ((*(u32*)&RDRAM[buffer->startAddress] & 0xFFFEFFFE) == (buffer->startAddress & 0xFFFEFFFE)))
-        {
-            gDP.loadTile->frameBuffer = buffer;
-            gDP.textureMode = TEXTUREMODE_FRAMEBUFFER;
-            gDP.loadType = LOADTYPE_BLOCK;
-            gDP.changed |= CHANGED_TMEM;
-            return;
-        }
     }
 
     auto src = (u64*)&RDRAM[address];

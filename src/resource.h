@@ -1338,7 +1338,6 @@
 #define IDC_FOG 1066
 #define rad11 0x042a
 #define IDC_CHECK1 1067
-#define IDC_FRAMEBUFFER 1067
 #define IDC_SHOWTEXTURE 1067
 #define rad12 0x042b
 #define rad13 0x042c

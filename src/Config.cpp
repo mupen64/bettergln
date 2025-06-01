@@ -86,10 +86,7 @@ void Config_LoadConfig()
 
         RegQueryValueEx(hKey, "Texture Cache Size", 0, NULL, (BYTE*)&value, &size);
         cache.maxBytes = value * 1048576;
-
-        RegQueryValueEx(hKey, "Hardware Frame Buffer Textures", 0, NULL, (BYTE*)&value, &size);
-        OGL.frameBufferTextures = value ? TRUE : FALSE;
-
+        
         RegQueryValueEx(hKey, "Dithered Alpha Testing", 0, NULL, (BYTE*)&value, &size);
         OGL.usePolygonStipple = value ? TRUE : FALSE;
         
@@ -127,7 +124,6 @@ void Config_LoadConfig()
         OGL.fullscreenRefresh = 60;
         OGL.forceBilinear = FALSE;
         cache.maxBytes = 32 * 1048576;
-        OGL.frameBufferTextures = FALSE;
         OGL.textureFilter = TextureFilter::None;
         OGL.usePolygonStipple = FALSE;
     }
@@ -161,10 +157,7 @@ void Config_SaveConfig()
 
     value = cache.maxBytes / 1048576;
     RegSetValueEx(hKey, "Texture Cache Size", 0, REG_DWORD, (BYTE*)&value, 4);
-
-    value = OGL.frameBufferTextures ? 1 : 0;
-    RegSetValueEx(hKey, "Hardware Frame Buffer Textures", 0, REG_DWORD, (BYTE*)&value, 4);
-
+    
     value = OGL.usePolygonStipple ? 1 : 0;
     RegSetValueEx(hKey, "Dithered Alpha Testing", 0, REG_DWORD, (BYTE*)&value, 4);
 
@@ -226,7 +219,6 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
         OGL.windowedHeight = windowedModes[i].height;
     }
 
-    OGL.frameBufferTextures = (SendDlgItemMessage(hWndDlg, IDC_FRAMEBUFFER, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
     OGL.usePolygonStipple = (SendDlgItemMessage(hWndDlg, IDC_DITHEREDALPHATEST, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
 
     if (!OGL.fullscreen)
@@ -406,7 +398,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
 
         // Enable/disable fog
         SendDlgItemMessage(hWndDlg, IDC_FOG, BM_SETCHECK, OGL.fog ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
-        SendDlgItemMessage(hWndDlg, IDC_FRAMEBUFFER, BM_SETCHECK, OGL.frameBufferTextures ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
 
         SendDlgItemMessage(hWndDlg, IDC_DITHEREDALPHATEST, BM_SETCHECK, OGL.usePolygonStipple ? (LPARAM)BST_CHECKED : (LPARAM)BST_UNCHECKED, NULL);
 

@@ -174,13 +174,7 @@ void RSP_ProcessDList()
 
         GBI.cmd[RSP.cmd](w0, w1);
     }
-
-    /*	if (OGL.frameBufferTextures && gDP.colorImage.changed)
-        {
-            FrameBuffer_SaveBuffer( gDP.colorImage.address, gDP.colorImage.size, gDP.colorImage.width, gDP.colorImage.height );
-            gDP.colorImage.changed = FALSE;
-        }*/
-
+    
     RSP.busy = FALSE;
     RSP.DList++;
     gSP.changed |= CHANGED_COLORBUFFER;

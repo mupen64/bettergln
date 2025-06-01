@@ -39,41 +39,11 @@ void VI_UpdateScreen()
 {
     glFinish();
 
-    if (OGL.frameBufferTextures)
+    if (gSP.changed & CHANGED_COLORBUFFER)
     {
-        FrameBuffer* current = FrameBuffer_FindBuffer(*REG.VI_ORIGIN);
-
-        if ((*REG.VI_ORIGIN != VI.lastOrigin) || ((current) && current->changed))
-        {
-            if (gDP.colorImage.changed)
-            {
-                FrameBuffer_SaveBuffer(gDP.colorImage.address, gDP.colorImage.size, gDP.colorImage.width, gDP.colorImage.height);
-                gDP.colorImage.changed = FALSE;
-            }
-
-            FrameBuffer_RenderBuffer(*REG.VI_ORIGIN);
-
-            gDP.colorImage.changed = FALSE;
-            VI.lastOrigin = *REG.VI_ORIGIN;
-#ifdef DEBUG
-            while (Debug.paused && !Debug.step)
-                ;
-            Debug.step = FALSE;
-#endif
-        }
+        SwapBuffers(OGL.hDC);
+        gSP.changed &= ~CHANGED_COLORBUFFER;
     }
-    else
-    {
-        if (gSP.changed & CHANGED_COLORBUFFER)
-        {
-            SwapBuffers(OGL.hDC);
-            gSP.changed &= ~CHANGED_COLORBUFFER;
-#ifdef DEBUG
-            while (Debug.paused && !Debug.step)
-                ;
-            Debug.step = FALSE;
-#endif
-        }
-    }
+    
     glFinish();
 }

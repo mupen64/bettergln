@@ -55,7 +55,6 @@ struct GLInfo {
     int maxGeneralCombiners;
 
     TextureFilter textureFilter = TextureFilter::None;
-    BOOL frameBufferTextures;
     float originAdjust;
     // 2xSAI: 2
     // xBRZ: 2, 3, 4, 5, 6

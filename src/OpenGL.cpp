@@ -27,13 +27,6 @@ void OGL_ReadPixels()
     glReadBuffer(oldMode); // restore old read buffer
 }
 
-void GLAPIENTRY GLErrorHandler(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
-{
-    fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-            (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-            type, severity, message);
-}
-
 void OGL_InitExtensions()
 {
     GLenum glew = glewInit();
@@ -42,8 +35,7 @@ void OGL_InitExtensions()
         printf("Error initialising glew\n");
         return;
     }
-    if (GL_KHR_debug)
-        glDebugMessageCallback(GLErrorHandler, 0);
+    
     OGL.NV_register_combiners = GLEW_NV_register_combiners;
     glGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV, &OGL.maxGeneralCombiners);
 
