@@ -18,57 +18,31 @@ RSPInfo RSP;
 
 void RSP_LoadMatrix(f32 mtx[4][4], u32 address)
 {
-    f32 recip = 1.5258789e-05f;
+    constexpr float recip = 1.0 / 65536.0;
+    constexpr int offset_lo[] = {2, 0, 6, 4};
+    constexpr int offset_hi[] = {0x22, 0x20, 0x26, 0x24};
 
-    __asm {
-        mov esi, dword ptr [RDRAM];
-        add esi, dword ptr [address];
-        mov edi, dword ptr [mtx];
+    uint8_t* base = RDRAM + address;
 
-        mov ecx, 4
-        LoadLoop:
-        fild word ptr [esi+02h]
-        movzx eax, word ptr [esi+22h]
-        mov dword ptr [edi], eax
-        fild dword ptr [edi]
-        fmul dword ptr [recip]
-        fadd
-        fstp dword ptr [edi]
+    for (uint8_t row = 0; row < 4; ++row)
+    {
+        for (uint8_t col = 0; col < 4; ++col)
+        {
+            const int16_t lo = *reinterpret_cast<int16_t*>(base + offset_lo[col]);
+            const uint16_t hi = *reinterpret_cast<uint16_t*>(base + offset_hi[col]);
+            const float result = static_cast<float>(lo) + static_cast<float>(hi) * recip;
+            
+            mtx[row][col] = result;
+        }
 
-        fild word ptr [esi+00h]
-        movzx eax, word ptr [esi+20h]
-        mov dword ptr [edi+04h], eax
-        fild dword ptr [edi+04h]
-        fmul dword ptr [recip]
-        fadd
-        fstp dword ptr [edi+04h]
-
-        fild word ptr [esi+06h]
-        movzx eax, word ptr [esi+26h]
-        mov dword ptr [edi+08h], eax
-        fild dword ptr [edi+08h]
-        fmul dword ptr [recip]
-        fadd
-        fstp dword ptr [edi+08h]
-
-        fild word ptr [esi+04h]
-        movzx eax, word ptr [esi+24h]
-        mov dword ptr [edi+0Ch], eax
-        fild dword ptr [edi+0Ch]
-        fmul dword ptr [recip]
-        fadd
-        fstp dword ptr [edi+0Ch]
-
-        add esi, 08h
-        add edi, 10h
-        loop LoadLoop
+        base += 8;
     }
 }
 
 DWORD WINAPI RSP_ThreadProc(LPVOID)
 {
     hqxInit();
-    
+
     SetEvent(RSP.threadFinished);
 
     while (TRUE)
