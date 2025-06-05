@@ -9,7 +9,7 @@ extern HINSTANCE hInstance;
 extern void (*CheckInterrupts)(void);
 extern char* screenDirectory;
 
-#define PLUGIN_VERSION "1.4-rc1"
+#define PLUGIN_VERSION "1.4-rc2"
 
 #ifdef _M_X64
 #define PLUGIN_ARCH "-x64"
