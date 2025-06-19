@@ -115,12 +115,12 @@ inline void bswap_4_x32_sse2(__m128i& vec)
 /**
  * \brief Copies data from a source buffer to a destination buffer while performing a byteswap within 4-byte groups.
  * \param src The source buffer.
- * \param dest The destination buffer.
+ * \param dst The destination buffer.
  * \param num_bytes The number of bytes to copy.
  */
-inline void unswap_copy(uint8_t* p_src, uint8_t* p_dest, u32 num_bytes)
+inline void unswap_copy(uint8_t* src, uint8_t* dst, u32 num_bytes)
 {
-    const uintptr_t src_addr = reinterpret_cast<uintptr_t>(p_src);
+    const uintptr_t src_addr = reinterpret_cast<uintptr_t>(src);
     u32 leading_bytes = src_addr & 3;
 
     if (leading_bytes != 0)
@@ -129,21 +129,21 @@ inline void unswap_copy(uint8_t* p_src, uint8_t* p_dest, u32 num_bytes)
         leading_bytes = min(leading_bytes, num_bytes);
 
         for (u32 i = 0; i < leading_bytes; ++i)
-            p_dest[i] = p_src[3 - i];
+            dst[i] = src[3 - i];
 
-        p_src += leading_bytes;
-        p_dest += leading_bytes;
+        src += leading_bytes;
+        dst += leading_bytes;
         num_bytes -= leading_bytes;
     }
 
     const u32 sse_block_size = (num_bytes / 16) * 16;
     for (u32 i = 0; i < sse_block_size; i += 16)
     {
-        __m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p_src));
+        __m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(src));
         bswap_4_x32_sse2(data);
-        _mm_storeu_si128(reinterpret_cast<__m128i*>(p_dest), data);
-        p_src += 16;
-        p_dest += 16;
+        _mm_storeu_si128(reinterpret_cast<__m128i*>(dst), data);
+        src += 16;
+        dst += 16;
     }
 
     num_bytes -= sse_block_size;
@@ -151,18 +151,18 @@ inline void unswap_copy(uint8_t* p_src, uint8_t* p_dest, u32 num_bytes)
     for (u32 i = 0; i < num_bytes / 4; ++i)
     {
         uint32_t val{};
-        std::memcpy(&val, p_src, sizeof(uint32_t));
+        std::memcpy(&val, src, sizeof(uint32_t));
         val = (val >> 24 & 0x000000FF) | (val >> 8) & 0x0000FF00 | (val << 8) & 0x00FF0000 | (val << 24) & 0xFF000000;
-        std::memcpy(p_dest, &val, sizeof(uint32_t));
-        p_src += 4;
-        p_dest += 4;
+        std::memcpy(dst, &val, sizeof(uint32_t));
+        src += 4;
+        dst += 4;
     }
 
     const u32 trailing_bytes = num_bytes % 4;
     if (trailing_bytes > 0)
     {
         for (u32 i = 0; i < trailing_bytes; ++i)
-            p_dest[i] = p_src[3 - i];
+            dst[i] = src[3 - i];
     }
 }
 
