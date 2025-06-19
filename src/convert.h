@@ -1,7 +1,4 @@
-#include <algorithm>
-
-#ifndef CONVERT_H
-#define CONVERT_H
+#pragma once
 
 const unsigned char Five2Eight[32] =
 {
@@ -101,76 +98,6 @@ const unsigned char One2Eight[2] =
 0, // 0 = 00000000
 255, // 1 = 11111111
 };
-
-// Un-swaps on the dword, works with non-dword aligned addresses
-/*inline void UnswapCopy( void *src, void *dest, u32 numBytes )
-{
-    __asm
-    {
-        mov		ecx, 0
-        mov		esi, dword ptr [src]
-        mov		edi, dword ptr [dest]
-
-        mov		ebx, esi
-        and		ebx, 3			// ebx = number of leading bytes
-
-        cmp		ebx, 0
-        jz		StartDWordLoop
-
-        neg		ebx
-        add		ebx, 4
-        cmp		ebx, [numBytes]
-        jle		NotGreater
-        mov		ebx, [numBytes]
-NotGreater:
-        mov		ecx, ebx
-
-        xor		esi, 3
-
-LeadingLoop:				// Copies leading bytes, in reverse order (un-swaps)
-        mov		al, byte ptr [esi]
-        mov		byte ptr [edi], al
-        sub		esi, 1
-        add		edi, 1
-        loop	LeadingLoop
-        add		esi, 5
-
-StartDWordLoop:
-        mov		ecx, dword ptr [numBytes]
-        sub		ecx, ebx			// Don't copy what's already been copied
-
-        mov		ebx, ecx
-        and		ebx, 3			// ebx = number of trailing bytes
-
-        shr		ecx, 2			// ecx = number of dwords
-
-        cmp		ecx, 0			// If there's nothing to do, don't do it
-        jz		StartTrailingLoop
-
-        // Copies from source to destination, bswap-ing first
-DWordLoop:
-        mov		eax, dword ptr [esi]
-        bswap	eax
-        mov		dword ptr [edi], eax
-        add		esi, 4
-        add		edi, 4
-        loop	DWordLoop
-
-StartTrailingLoop:
-        cmp		ebx, 0
-        jz		Done
-        mov		ecx, ebx
-        add		esi, 3
-
-TrailingLoop:
-        mov		al, byte ptr [esi]
-        mov		byte ptr [esi], al
-        sub		esi, 1
-        add		edi, 1
-        loop	TrailingLoop
-Done:
-    }
-}*/
 
 inline void bswap_4_x32_sse2(__m128i& vec)
 {
@@ -543,4 +470,3 @@ inline u32 I4_RGBA8888(u8 color)
         mov al, cl
     }
 }
-#endif
