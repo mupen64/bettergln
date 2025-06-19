@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #ifndef CONVERT_H
 #define CONVERT_H
 
@@ -170,69 +172,70 @@ Done:
     }
 }*/
 
-inline void UnswapCopy(void* src, void* dest, u32 numBytes)
+inline void bswap_4_x32_sse2(__m128i& vec)
 {
-    __asm
+    __m128i tmp1 = _mm_srli_epi32(vec, 24);
+    __m128i tmp2 = _mm_slli_epi32(vec, 24);
+
+    __m128i t1 = _mm_and_si128(_mm_srli_epi32(vec, 8), _mm_set1_epi32(0x0000FF00));
+    __m128i t2 = _mm_and_si128(_mm_slli_epi32(vec, 8), _mm_set1_epi32(0x00FF0000));
+
+    vec = _mm_or_si128(tmp2, tmp1);
+    vec = _mm_or_si128(vec, t1);
+    vec = _mm_or_si128(vec, t2);
+}
+
+/**
+ * \brief Copies data from a source buffer to a destination buffer while performing a byteswap within 4-byte groups.
+ * \param src The source buffer.
+ * \param dest The destination buffer.
+ * \param num_bytes The number of bytes to copy.
+ */
+inline void unswap_copy(uint8_t* p_src, uint8_t* p_dest, u32 num_bytes)
+{
+    const uintptr_t src_addr = reinterpret_cast<uintptr_t>(p_src);
+    u32 leading_bytes = src_addr & 3;
+
+    if (leading_bytes != 0)
     {
-        mov ecx, 0
-        mov esi, dword ptr [src]
-        mov edi, dword ptr [dest]
+        leading_bytes = 4 - leading_bytes;
+        leading_bytes = min(leading_bytes, num_bytes);
 
-        mov ebx, esi
-        and ebx, 3 // ebx = number of leading bytes
+        for (u32 i = 0; i < leading_bytes; ++i)
+            p_dest[i] = p_src[3 - i];
 
-        cmp ebx, 0
-        jz StartDWordLoop
-        neg ebx
-        add ebx, 4
+        p_src += leading_bytes;
+        p_dest += leading_bytes;
+        num_bytes -= leading_bytes;
+    }
 
-        cmp ebx, [numBytes]
-        jle NotGreater
-        mov ebx, [numBytes]
-        NotGreater:
-        mov ecx, ebx
-        xor esi, 3
-        LeadingLoop: // Copies leading bytes, in reverse order (un-swaps)
-        mov al, byte ptr [esi]
-        mov byte ptr [edi], al
-        sub esi, 1
-        add edi, 1
-        loop LeadingLoop
-        add esi, 5
+    const u32 sse_block_size = (num_bytes / 16) * 16;
+    for (u32 i = 0; i < sse_block_size; i += 16)
+    {
+        __m128i data = _mm_loadu_si128(reinterpret_cast<const __m128i*>(p_src));
+        bswap_4_x32_sse2(data);
+        _mm_storeu_si128(reinterpret_cast<__m128i*>(p_dest), data);
+        p_src += 16;
+        p_dest += 16;
+    }
 
-        StartDWordLoop:
-        mov ecx, dword ptr [numBytes]
-        sub ecx, ebx // Don't copy what's already been copied
+    num_bytes -= sse_block_size;
 
-        mov ebx, ecx
-        and ebx, 3
-        //		add		ecx, 3			// Round up to nearest dword
-        shr ecx, 2
+    for (u32 i = 0; i < num_bytes / 4; ++i)
+    {
+        uint32_t val{};
+        std::memcpy(&val, p_src, sizeof(uint32_t));
+        val = (val >> 24 & 0x000000FF) | (val >> 8) & 0x0000FF00 | (val << 8) & 0x00FF0000 | (val << 24) & 0xFF000000;
+        std::memcpy(p_dest, &val, sizeof(uint32_t));
+        p_src += 4;
+        p_dest += 4;
+    }
 
-        cmp ecx, 0 // If there's nothing to do, don't do it
-        jle StartTrailingLoop
-
-        // Copies from source to destination, bswap-ing first
-        DWordLoop:
-        mov eax, dword ptr [esi]
-        bswap eax
-        mov dword ptr [edi], eax
-        add esi, 4
-        add edi, 4
-        loop DWordLoop
-        StartTrailingLoop:
-        cmp ebx, 0
-        jz Done
-        mov ecx, ebx
-        xor esi, 3
-
-        TrailingLoop:
-        mov al, byte ptr [esi]
-        mov byte ptr [edi], al
-        sub esi, 1
-        add edi, 1
-        loop TrailingLoop
-        Done:
+    const u32 trailing_bytes = num_bytes % 4;
+    if (trailing_bytes > 0)
+    {
+        for (u32 i = 0; i < trailing_bytes; ++i)
+            p_dest[i] = p_src[3 - i];
     }
 }
 

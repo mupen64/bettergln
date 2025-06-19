@@ -11,6 +11,8 @@
 #include <cstdint>
 #include <string>
 #include <core_plugin.h>
+#include <emmintrin.h>
+#include <intrin.h>
 #include "Types.h"
 
 #define EXPORT __declspec(dllexport)
