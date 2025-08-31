@@ -7,5 +7,5 @@
 </h1>
 
 <p align="center">
-  Lightweight Mupen64 video plugin with MGE support.
+  Lightweight Mupen64 video plugin geared towards a fast TASing workflow.
 </p>
