@@ -592,7 +592,7 @@ void gDPLoadTile(u32 tile, u32 uls, u32 ult, u32 lrs, u32 lrt)
 
     for (y = 0; y < height; y++)
     {
-        UnswapCopy(src, dest, bpl);
+        unswap_copy(src, (uint8_t*)dest, bpl);
         if (y & 1)
             Interleave(dest, line);
 
@@ -643,7 +643,7 @@ void gDPLoadBlock(u32 tile, u32 uls, u32 ult, u32 lrs, u32 dxt)
 
         for (u32 y = 0; y < height; y++)
         {
-            UnswapCopy(src, dest, bpl);
+            unswap_copy((uint8_t*)src, (uint8_t*)dest, bpl);
             if (y & 1)
                 Interleave(dest, line);
 
@@ -652,7 +652,7 @@ void gDPLoadBlock(u32 tile, u32 uls, u32 ult, u32 lrs, u32 dxt)
         }
     }
     else
-        UnswapCopy(src, dest, bytes);
+        unswap_copy((uint8_t*)src, (uint8_t*)dest, bytes);
 
     gDP.textureMode = TEXTUREMODE_NORMAL;
     gDP.loadType = LOADTYPE_BLOCK;
