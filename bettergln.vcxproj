@@ -94,6 +94,7 @@
     <ItemDefinitionGroup>
         <ClCompile>
             <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+            <StringPooling>true</StringPooling>
             <LanguageStandard>stdcpp23</LanguageStandard>
             <PrecompiledHeader>Use</PrecompiledHeader>
             <AdditionalIncludeDirectories>lib;lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

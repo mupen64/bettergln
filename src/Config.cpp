@@ -12,8 +12,9 @@ HWND hConfigDlg;
 
 struct
 {
-    WORD width, height;
-    char* description;
+    WORD width{};
+    WORD height{};
+    std::string description{};
 } windowedModes[numWindowedModes] = {
 {320, 240, "320 x 240"},
 {400, 300, "400 x 300"},
@@ -201,7 +202,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
         // Fill windowed mode resolution
         for (int i = 0; i < numWindowedModes; i++)
         {
-            SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM)windowedModes[i].description);
+            ComboBox_AddString(GetDlgItem(hWndDlg, IDC_WINDOWEDRES), windowedModes[i].description.c_str());
             if ((OGL.windowedWidth == windowedModes[i].width) &&
                 (OGL.windowedHeight == windowedModes[i].height))
             {
@@ -209,7 +210,7 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
                 custom = false;
             }
         }
-        
+
         SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM) "Custom...");
 
         char val[32];
