@@ -18,7 +18,7 @@ NULL,
 RGB(0, 0, 0),
 NULL,
 NULL,
-"Courier New"};
+L"Courier New"};
 
 CHARFORMAT unknownFormat =
 {
@@ -30,7 +30,7 @@ NULL,
 RGB(128, 128, 0),
 NULL,
 NULL,
-"Courier New"};
+L"Courier New"};
 
 CHARFORMAT errorFormat =
 {
@@ -42,7 +42,7 @@ NULL,
 RGB(128, 0, 0),
 NULL,
 NULL,
-"Courier New"};
+L"Courier New"};
 
 CHARFORMAT detailFormat =
 {
@@ -54,7 +54,7 @@ NULL,
 RGB(0, 128, 0),
 NULL,
 NULL,
-"Courier New"};
+L"Courier New"};
 
 HWND hDebugDlg;
 BOOL DumpMessages;
@@ -177,7 +177,7 @@ INT_PTR CALLBACK DebugDlgProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam
 
 void DebugDlgThreadFunc(void*)
 {
-    LoadLibrary("RichEd20.dll");
+    LoadLibrary(L"RichEd20.dll");
     hDebugDlg = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_DEBUGDLG), hWnd, DebugDlgProc);
 
     MSG msg;

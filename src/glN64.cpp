@@ -4,13 +4,14 @@
 #include "N64.h"
 #include "RSP.h"
 #include "Config.h"
+#include "MiscHelpers.h"
 
 HWND hWnd;
 HWND hStatusBar;
 HWND hToolBar;
 HINSTANCE hInstance;
 
-char* screenDirectory;
+std::filesystem::path screenDirectory;
 
 void (*CheckInterrupts)(void);
 
@@ -33,7 +34,7 @@ bool init_rsp_thread()
         i = CreateEvent(NULL, FALSE, FALSE, NULL);
         if (i == nullptr)
         {
-            MessageBox(hWnd, "Error creating video thread message events.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
+            MessageBox(hWnd, L"Error creating video thread message events.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
             return false;
         }
     }
@@ -41,7 +42,7 @@ bool init_rsp_thread()
     RSP.threadFinished = CreateEvent(NULL, FALSE, FALSE, NULL);
     if (RSP.threadFinished == NULL)
     {
-        MessageBox(hWnd, "Error creating video thread finished event.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
+        MessageBox(hWnd, L"Error creating video thread finished event.", PLUGIN_NAME, MB_OK | MB_ICONERROR);
         return false;
     }
 
@@ -98,7 +99,7 @@ EXPORT void CALL GetDllInfo(core_plugin_info* PluginInfo)
 {
     PluginInfo->ver = 0x100;
     PluginInfo->type = plugin_video;
-    strcpy(PluginInfo->name, PLUGIN_NAME);
+    strcpy(PluginInfo->name, MiscHelpers::wstring_to_string(PLUGIN_NAME).c_str());
     PluginInfo->unused_normal_memory = FALSE;
     PluginInfo->unused_byteswapped = TRUE;
 }

@@ -26,9 +26,9 @@
     </PropertyGroup>
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
 
-    <PropertyGroup>
+    <PropertyGroup Label="Configuration">
         <ConfigurationType>DynamicLibrary</ConfigurationType>
-        <CharacterSet>MultiByte</CharacterSet>
+        <CharacterSet>Unicode</CharacterSet>
         <PlatformToolset>v143</PlatformToolset>
     </PropertyGroup>
     
@@ -106,7 +106,7 @@
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>
             <Optimization>Disabled</Optimization>
-            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
+            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
             <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
             <WarningLevel>Level3</WarningLevel>
@@ -124,7 +124,7 @@
             <IntrinsicFunctions>true</IntrinsicFunctions>
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
             <OmitFramePointers>true</OmitFramePointers>
-            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
+            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
             <FunctionLevelLinking>true</FunctionLevelLinking>
             <WarningLevel>Level3</WarningLevel>
@@ -140,7 +140,7 @@
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
         <ClCompile>
             <Optimization>Disabled</Optimization>
-            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
+            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
             <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
             <WarningLevel>Level3</WarningLevel>
@@ -158,7 +158,7 @@
             <IntrinsicFunctions>true</IntrinsicFunctions>
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
             <OmitFramePointers>true</OmitFramePointers>
-            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
+            <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
             <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
             <FunctionLevelLinking>true</FunctionLevelLinking>
             <WarningLevel>Level3</WarningLevel>
@@ -229,6 +229,7 @@
         <ClCompile Include="src\VI.cpp" />
     </ItemGroup>
     <ItemGroup>
+        <ClInclude Include="src\MiscHelpers.h" />
         <ClInclude Include="src\stdafx.h" />
         <ClInclude Include="src\2xSAI.h" />
         <ClInclude Include="src\3DMath.h" />

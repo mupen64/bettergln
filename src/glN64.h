@@ -1,5 +1,6 @@
 #ifndef GLN64_H
 #define GLN64_H
+#include <filesystem>
 
 extern HWND hWnd;
 extern HWND hStatusBar;
@@ -7,22 +8,22 @@ extern HWND hToolBar;
 extern HINSTANCE hInstance;
 
 extern void (*CheckInterrupts)(void);
-extern char* screenDirectory;
+extern std::filesystem::path screenDirectory;
 
-#define PLUGIN_VERSION "1.4-rc2"
+#define PLUGIN_VERSION L"1.4-rc2"
 
 #ifdef _M_X64
-#define PLUGIN_ARCH "-x64"
+#define PLUGIN_ARCH L"-x64"
 #else
-#define PLUGIN_ARCH "-x86"
+#define PLUGIN_ARCH L"-x86"
 #endif
 
 #ifdef _DEBUG
-#define PLUGIN_TARGET "-debug"
+#define PLUGIN_TARGET L"-debug"
 #else
-#define PLUGIN_TARGET "-release"
+#define PLUGIN_TARGET L"-release"
 #endif
 
-#define PLUGIN_NAME "bettergln " PLUGIN_VERSION PLUGIN_ARCH PLUGIN_TARGET
+#define PLUGIN_NAME L"bettergln " PLUGIN_VERSION PLUGIN_ARCH PLUGIN_TARGET
 
 #endif

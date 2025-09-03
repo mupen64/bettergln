@@ -9,6 +9,8 @@
 #include "Combiner.h"
 #include "VI.h"
 
+#include <format>
+
 GLInfo OGL{};
 
 void* gCapturedPixels; // pointer to buffer to fill
@@ -186,33 +188,33 @@ bool OGL_InitContext()
 
     if ((OGL.hDC = GetDC(hWnd)) == NULL)
     {
-        MessageBox(hWnd, "Error while getting a device context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
+        MessageBox(hWnd, L"Error while getting a device context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         return FALSE;
     }
 
     if ((pixelFormat = ChoosePixelFormat(OGL.hDC, &pfd)) == 0)
     {
-        MessageBox(hWnd, "Unable to find a suitable pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
+        MessageBox(hWnd, L"Unable to find a suitable pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         OGL_Stop();
         return FALSE;
     }
 
     if ((SetPixelFormat(OGL.hDC, pixelFormat, &pfd)) == FALSE)
     {
-        MessageBox(hWnd, "Error while setting pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
+        MessageBox(hWnd, L"Error while setting pixel format!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         OGL_Stop();
         return FALSE;
     }
     if ((OGL.hRC = wglCreateContext(OGL.hDC)) == NULL)
     {
-        MessageBox(hWnd, "Error while creating OpenGL context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
+        MessageBox(hWnd, L"Error while creating OpenGL context!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         OGL_Stop();
         return FALSE;
     }
 
     if ((wglMakeCurrent(OGL.hDC, OGL.hRC)) == FALSE)
     {
-        MessageBox(hWnd, "Error while making OpenGL context current!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
+        MessageBox(hWnd, L"Error while making OpenGL context current!", PLUGIN_NAME, MB_ICONERROR | MB_OK);
         OGL_Stop();
         return FALSE;
     }
@@ -870,23 +872,11 @@ void OGL_SaveScreenshot()
     fileHeader.bfSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + infoHeader.biSizeImage;
     fileHeader.bfReserved1 = fileHeader.bfReserved2 = 0;
     fileHeader.bfOffBits = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+    
+    CreateDirectory(screenDirectory.c_str(), NULL);
 
-    char filename[256];
-
-    CreateDirectory(screenDirectory, NULL);
-
-    int i = 0;
-    do
-    {
-        sprintf(filename, "%sscreen%02i.bmp", screenDirectory, i);
-        i++;
-
-        if (i > 99)
-            return;
-
-        hBitmapFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-    }
-    while (hBitmapFile == INVALID_HANDLE_VALUE);
+    const auto filename = std::format(L"{}screen{}.bmp", screenDirectory.wstring(), time(nullptr));
+    hBitmapFile = CreateFile(filename.c_str(), GENERIC_WRITE, 0, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
 
     DWORD written;
 
