@@ -95,8 +95,12 @@
         <ClCompile>
             <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
             <LanguageStandard>stdcpp23</LanguageStandard>
+            <PrecompiledHeader>Use</PrecompiledHeader>
             <AdditionalIncludeDirectories>lib;lib\glew;lib\mupen;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
+        <Link>
+            <GenerateDebugInformation>true</GenerateDebugInformation>
+        </Link>
     </ItemDefinitionGroup>
     <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
         <ClCompile>
@@ -105,11 +109,8 @@
             <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
             <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
             <WarningLevel>Level3</WarningLevel>
-            <PrecompiledHeader>Use</PrecompiledHeader>
-            <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
         </ClCompile>
         <Link>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
             <SubSystem>Windows</SubSystem>
             <AdditionalLibraryDirectories>lib\glew;lib\mupen;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
             <AdditionalDependencies>opengl32.lib;glu32.lib;winmm.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -123,15 +124,11 @@
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
             <OmitFramePointers>true</OmitFramePointers>
             <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
-            <StringPooling>true</StringPooling>
             <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
             <FunctionLevelLinking>true</FunctionLevelLinking>
             <WarningLevel>Level3</WarningLevel>
-            <PrecompiledHeader>Use</PrecompiledHeader>
-            <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
         </ClCompile>
         <Link>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
             <SubSystem>Windows</SubSystem>
             <OptimizeReferences>true</OptimizeReferences>
             <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -146,11 +143,8 @@
             <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
             <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
             <WarningLevel>Level3</WarningLevel>
-            <PrecompiledHeader>Use</PrecompiledHeader>
-            <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
         </ClCompile>
         <Link>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
             <SubSystem>Windows</SubSystem>
             <AdditionalLibraryDirectories>lib\glew-x64;%(AdditionalIncludeDirectories)</AdditionalLibraryDirectories>
             <AdditionalDependencies>opengl32.lib;glu32.lib;winmm.lib;glew32s.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -164,15 +158,11 @@
             <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
             <OmitFramePointers>true</OmitFramePointers>
             <PreprocessorDefinitions>WIN32;GLEW_STATIC;CORE_PLUGIN_WITH_CALLBACKS</PreprocessorDefinitions>
-            <StringPooling>true</StringPooling>
             <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
             <FunctionLevelLinking>true</FunctionLevelLinking>
             <WarningLevel>Level3</WarningLevel>
-            <PrecompiledHeader>Use</PrecompiledHeader>
-            <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
         </ClCompile>
         <Link>
-            <GenerateDebugInformation>true</GenerateDebugInformation>
             <SubSystem>Windows</SubSystem>
             <OptimizeReferences>true</OptimizeReferences>
             <EnableCOMDATFolding>true</EnableCOMDATFolding>
