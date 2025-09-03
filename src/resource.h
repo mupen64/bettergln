@@ -1310,15 +1310,11 @@
 #define chx9 0x0418
 #define IDC_WINDOWEDRES 1049
 #define chx10 0x0419
-#define IDC_FULLSCREENMODE 1050
-#define IDC_FULLSCREENRES 1050
 #define chx11 0x041a
 #define chx12 0x041b
-#define IDC_FULLSCREENREFRESH 1052
 #define chx13 0x041c
 #define IDC_WIREFRAME 1053
 #define chx14 0x041d
-#define IDC_FULLSCREENBITDEPTH 1054
 #define chx15 0x041e
 #define IDC_ALPHATESTSHARPNESS 1055
 #define chx16 0x041f
