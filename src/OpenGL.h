@@ -26,10 +26,9 @@ struct GLInfo {
     HWND hWnd;
     HPBUFFERARB hPbuffer;
 
-    DWORD fullscreenWidth, fullscreenHeight, fullscreenBits, fullscreenRefresh;
     DWORD width, height, windowedWidth, windowedHeight, heightOffset;
 
-    BOOL fullscreen, forceBilinear, fog;
+    BOOL forceBilinear, fog;
 
     float scaleX, scaleY;
 

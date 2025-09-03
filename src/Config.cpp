@@ -8,27 +8,6 @@
 
 HWND hConfigDlg;
 
-struct
-{
-    struct
-    {
-        DWORD width, height, bitDepth, refreshRate;
-    } selected;
-
-    DWORD bitDepth[4];
-
-    struct
-    {
-        DWORD width, height;
-    } resolution[32];
-
-    DWORD refreshRate[32];
-
-    DWORD numBitDepths;
-    DWORD numResolutions;
-    DWORD numRefreshRates;
-} fullscreen;
-
 #define numWindowedModes 12
 
 struct
@@ -65,10 +44,6 @@ void Config_LoadConfig()
 
     if (hKey)
     {
-        RegQueryValueEx(hKey, "Fullscreen Bit Depth", 0, NULL, (BYTE*)&OGL.fullscreenBits, &size);
-        RegQueryValueEx(hKey, "Fullscreen Width", 0, NULL, (BYTE*)&OGL.fullscreenWidth, &size);
-        RegQueryValueEx(hKey, "Fullscreen Height", 0, NULL, (BYTE*)&OGL.fullscreenHeight, &size);
-        RegQueryValueEx(hKey, "Fullscreen Refresh", 0, NULL, (BYTE*)&OGL.fullscreenRefresh, &size);
         RegQueryValueEx(hKey, "Windowed Width", 0, NULL, (BYTE*)&OGL.windowedWidth, &size);
         RegQueryValueEx(hKey, "Windowed Height", 0, NULL, (BYTE*)&OGL.windowedHeight, &size);
         RegQueryValueEx(hKey, "Windowed Width", 0, NULL, (BYTE*)&OGL.windowedWidth, &size);
@@ -86,10 +61,10 @@ void Config_LoadConfig()
 
         RegQueryValueEx(hKey, "Texture Cache Size", 0, NULL, (BYTE*)&value, &size);
         cache.maxBytes = value * 1048576;
-        
+
         RegQueryValueEx(hKey, "Dithered Alpha Testing", 0, NULL, (BYTE*)&value, &size);
         OGL.usePolygonStipple = value ? TRUE : FALSE;
-        
+
         RegQueryValueEx(hKey, "Ignore Scissor", 0, NULL, (BYTE*)&value, &size);
         OGL.ignoreScissor = value ? TRUE : FALSE;
 
@@ -118,10 +93,6 @@ void Config_LoadConfig()
         OGL.fog = TRUE;
         OGL.windowedWidth = 640;
         OGL.windowedHeight = 480;
-        OGL.fullscreenWidth = 640;
-        OGL.fullscreenHeight = 480;
-        OGL.fullscreenBits = 16;
-        OGL.fullscreenRefresh = 60;
         OGL.forceBilinear = FALSE;
         cache.maxBytes = 32 * 1048576;
         OGL.textureFilter = TextureFilter::None;
@@ -136,10 +107,6 @@ void Config_SaveConfig()
 
     RegCreateKeyEx(HKEY_CURRENT_USER, "Software\\N64 Emulation\\DLL\\glN64", 0, NULL, REG_OPTION_NON_VOLATILE, KEY_WRITE, NULL, &hKey, NULL);
 
-    RegSetValueEx(hKey, "Fullscreen Bit Depth", 0, REG_DWORD, (BYTE*)&OGL.fullscreenBits, 4);
-    RegSetValueEx(hKey, "Fullscreen Width", 0, REG_DWORD, (BYTE*)&OGL.fullscreenWidth, 4);
-    RegSetValueEx(hKey, "Fullscreen Height", 0, REG_DWORD, (BYTE*)&OGL.fullscreenHeight, 4);
-    RegSetValueEx(hKey, "Fullscreen Refresh", 0, REG_DWORD, (BYTE*)&OGL.fullscreenRefresh, 4);
     RegSetValueEx(hKey, "Windowed Width", 0, REG_DWORD, (BYTE*)&OGL.windowedWidth, 4);
     RegSetValueEx(hKey, "Windowed Height", 0, REG_DWORD, (BYTE*)&OGL.windowedHeight, 4);
 
@@ -157,7 +124,7 @@ void Config_SaveConfig()
 
     value = cache.maxBytes / 1048576;
     RegSetValueEx(hKey, "Texture Cache Size", 0, REG_DWORD, (BYTE*)&value, 4);
-    
+
     value = OGL.usePolygonStipple ? 1 : 0;
     RegSetValueEx(hKey, "Dithered Alpha Testing", 0, REG_DWORD, (BYTE*)&value, 4);
 
@@ -198,12 +165,6 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
 
     OGL.combiner = ComboBox_GetCurSel(GetDlgItem(hWndDlg, IDC_COMBINER));
 
-    OGL.fullscreenBits = fullscreen.bitDepth[SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_GETCURSEL, 0, 0)];
-    i = SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_GETCURSEL, 0, 0);
-    OGL.fullscreenWidth = fullscreen.resolution[i].width;
-    OGL.fullscreenHeight = fullscreen.resolution[i].height;
-    OGL.fullscreenRefresh = fullscreen.refreshRate[SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_GETCURSEL, 0, 0)];
-    
     i = SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_GETCURSEL, 0, 0);
     if (i == SendMessage(GetDlgItem(hWndDlg, IDC_WINDOWEDRES), CB_GETCOUNT, 0, 0) - 1)
     {
@@ -221,150 +182,34 @@ void Config_ApplyDlgConfig(HWND hWndDlg)
 
     OGL.usePolygonStipple = (SendDlgItemMessage(hWndDlg, IDC_DITHEREDALPHATEST, BM_GETCHECK, NULL, NULL) == BST_CHECKED);
 
-    if (!OGL.fullscreen)
-        OGL_ResizeWindow();
-
+    OGL_ResizeWindow();
     Config_SaveConfig();
     Config_LoadConfig();
-}
-
-void UpdateFullscreenConfig(HWND hWndDlg)
-{
-    DEVMODE deviceMode;
-    int i, j;
-    char text[256];
-
-    memset(&fullscreen.bitDepth, 0, sizeof(fullscreen.bitDepth));
-    memset(&fullscreen.resolution, 0, sizeof(fullscreen.resolution));
-    memset(&fullscreen.refreshRate, 0, sizeof(fullscreen.refreshRate));
-    fullscreen.numBitDepths = 0;
-    fullscreen.numResolutions = 0;
-    fullscreen.numRefreshRates = 0;
-
-    i = 0;
-    SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_RESETCONTENT, 0, 0);
-    while (EnumDisplaySettings(NULL, i, &deviceMode) != 0)
-    {
-        for (j = 0; j < fullscreen.numBitDepths; j++)
-        {
-            if (deviceMode.dmBitsPerPel == fullscreen.bitDepth[j])
-                break;
-        }
-
-        if ((deviceMode.dmBitsPerPel != fullscreen.bitDepth[j]) && (deviceMode.dmBitsPerPel > 8))
-        {
-            fullscreen.bitDepth[fullscreen.numBitDepths] = deviceMode.dmBitsPerPel;
-            sprintf(text, "%i bit", deviceMode.dmBitsPerPel);
-            SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_ADDSTRING, 0, (LPARAM)text);
-
-            if (fullscreen.selected.bitDepth == deviceMode.dmBitsPerPel)
-                SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_SETCURSEL, fullscreen.numBitDepths, 0);
-            fullscreen.numBitDepths++;
-        }
-
-        i++;
-    }
-
-    if (SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_GETCURSEL, 0, 0) == CB_ERR)
-        SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_SETCURSEL, SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_GETCOUNT, 0, 0) - 1, 0);
-
-
-    i = 0;
-    SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_RESETCONTENT, 0, 0);
-    while (EnumDisplaySettings(NULL, i, &deviceMode) != 0)
-    {
-        for (int j = 0; j < fullscreen.numResolutions; j++)
-        {
-            if ((deviceMode.dmPelsWidth == fullscreen.resolution[j].width) &&
-                (deviceMode.dmPelsHeight == fullscreen.resolution[j].height))
-            {
-                break;
-            }
-        }
-        if (((deviceMode.dmPelsWidth != fullscreen.resolution[j].width) ||
-             (deviceMode.dmPelsHeight != fullscreen.resolution[j].height)) &&
-            (deviceMode.dmBitsPerPel != fullscreen.selected.bitDepth))
-        {
-            fullscreen.resolution[fullscreen.numResolutions].width = deviceMode.dmPelsWidth;
-            fullscreen.resolution[fullscreen.numResolutions].height = deviceMode.dmPelsHeight;
-            sprintf(text, "%i x %i", deviceMode.dmPelsWidth, deviceMode.dmPelsHeight);
-            SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_ADDSTRING, 0, (LPARAM)text);
-
-            if ((fullscreen.selected.width == deviceMode.dmPelsWidth) &&
-                (fullscreen.selected.height == deviceMode.dmPelsHeight))
-                SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_SETCURSEL, fullscreen.numResolutions, 0);
-
-            fullscreen.numResolutions++;
-        }
-        i++;
-    }
-
-    if (SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_GETCURSEL, 0, 0) == CB_ERR)
-        SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_SETCURSEL, SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_GETCOUNT, 0, 0) - 1, 0);
-
-    i = 0;
-    SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_RESETCONTENT, 0, 0);
-    while (EnumDisplaySettings(NULL, i, &deviceMode) != 0)
-    {
-        for (int j = 0; j < fullscreen.numRefreshRates; j++)
-        {
-            if ((deviceMode.dmDisplayFrequency == fullscreen.refreshRate[j]))
-                break;
-        }
-        if ((deviceMode.dmDisplayFrequency != fullscreen.refreshRate[j]) &&
-            (deviceMode.dmPelsWidth == fullscreen.selected.width) &&
-            (deviceMode.dmPelsHeight == fullscreen.selected.height) &&
-            (deviceMode.dmBitsPerPel == fullscreen.selected.bitDepth))
-        {
-            fullscreen.refreshRate[j] = deviceMode.dmDisplayFrequency;
-            sprintf(text, "%i Hz", deviceMode.dmDisplayFrequency);
-            SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_ADDSTRING, 0, (LPARAM)text);
-
-            if (fullscreen.selected.refreshRate == deviceMode.dmDisplayFrequency)
-                SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_SETCURSEL, fullscreen.numRefreshRates, 0);
-
-            fullscreen.numRefreshRates++;
-        }
-        i++;
-    }
-    if (SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_GETCURSEL, 0, 0) == CB_ERR)
-        SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_SETCURSEL, SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_GETCOUNT, 0, 0) - 1, 0);
 }
 
 BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     char text[256]{};
     bool custom = true;
-    DEVMODE deviceMode{};
 
     switch (message)
     {
     case WM_INITDIALOG:
         hConfigDlg = hWndDlg;
 
-        fullscreen.selected.width = OGL.fullscreenWidth;
-        fullscreen.selected.height = OGL.fullscreenHeight;
-        fullscreen.selected.bitDepth = OGL.fullscreenBits;
-        fullscreen.selected.refreshRate = OGL.fullscreenRefresh;
-        UpdateFullscreenConfig(hWndDlg);
-
-        EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &deviceMode);
 
         // Fill windowed mode resolution
         for (int i = 0; i < numWindowedModes; i++)
         {
-            if ((deviceMode.dmPelsWidth > windowedModes[i].width) &&
-                (deviceMode.dmPelsHeight > windowedModes[i].height))
+            SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM)windowedModes[i].description);
+            if ((OGL.windowedWidth == windowedModes[i].width) &&
+                (OGL.windowedHeight == windowedModes[i].height))
             {
-                SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM)windowedModes[i].description);
-                if ((OGL.windowedWidth == windowedModes[i].width) &&
-                    (OGL.windowedHeight == windowedModes[i].height))
-                {
-                    SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_SETCURSEL, i, 0);
-                    custom = false;
-                }
+                SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_SETCURSEL, i, 0);
+                custom = false;
             }
         }
+        
         SendDlgItemMessage(hWndDlg, IDC_WINDOWEDRES, CB_ADDSTRING, 0, (LPARAM) "Custom...");
 
         char val[32];
@@ -405,9 +250,9 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
         SendDlgItemMessage(hWndDlg, IDC_CACHEMEGS, WM_SETTEXT, NULL, (LPARAM)text);
 
         SendMessage(hWndDlg, WM_COMMAND,
-                        MAKEWPARAM(IDC_TEXTUREFILTER, CBN_SELCHANGE),
-                        (LPARAM)GetDlgItem(hWndDlg, IDC_TEXTUREFILTER));
-        
+                    MAKEWPARAM(IDC_TEXTUREFILTER, CBN_SELCHANGE),
+                    (LPARAM)GetDlgItem(hWndDlg, IDC_TEXTUREFILTER));
+
         return TRUE;
 
     case WM_COMMAND:
@@ -422,33 +267,6 @@ BOOL CALLBACK ConfigDlgProc(HWND hWndDlg, UINT message, WPARAM wParam, LPARAM lP
             EndDialog(hWndDlg, wParam);
             hConfigDlg = NULL;
             return TRUE;
-        case IDC_FULLSCREENBITDEPTH:
-            if (HIWORD(wParam) == CBN_SELCHANGE)
-            {
-                fullscreen.selected.bitDepth = fullscreen.bitDepth[SendDlgItemMessage(hWndDlg, IDC_FULLSCREENBITDEPTH, CB_GETCURSEL, 0, 0)];
-
-                UpdateFullscreenConfig(hWndDlg);
-            }
-            break;
-        case IDC_FULLSCREENRES:
-            if (HIWORD(wParam) == CBN_SELCHANGE)
-            {
-                const int i = SendDlgItemMessage(hWndDlg, IDC_FULLSCREENRES, CB_GETCURSEL, 0, 0);
-                fullscreen.selected.width = fullscreen.resolution[i].width;
-                fullscreen.selected.height = fullscreen.resolution[i].height;
-
-                UpdateFullscreenConfig(hWndDlg);
-            }
-            break;
-        case IDC_FULLSCREENREFRESH:
-            if (HIWORD(wParam) == CBN_SELCHANGE)
-            {
-                fullscreen.selected.refreshRate = fullscreen.refreshRate[SendDlgItemMessage(hWndDlg, IDC_FULLSCREENREFRESH, CB_GETCURSEL, 0, 0)];
-
-                UpdateFullscreenConfig(hWndDlg);
-            }
-            break;
-
         case IDC_WINDOWEDRES:
             if (HIWORD(wParam) == CBN_SELCHANGE)
             {

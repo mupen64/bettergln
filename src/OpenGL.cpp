@@ -35,7 +35,7 @@ void OGL_InitExtensions()
         printf("Error initialising glew\n");
         return;
     }
-    
+
     OGL.NV_register_combiners = GLEW_NV_register_combiners;
     glGetIntegerv(GL_MAX_GENERAL_COMBINERS_NV, &OGL.maxGeneralCombiners);
 
@@ -133,41 +133,30 @@ void OGL_UpdateScale()
 void OGL_ResizeWindow()
 {
     RECT windowRect, statusRect, toolRect;
+    
+    OGL.width = OGL.windowedWidth;
+    OGL.height = OGL.windowedHeight;
 
-    if (OGL.fullscreen)
-    {
-        OGL.width = OGL.fullscreenWidth;
-        OGL.height = OGL.fullscreenHeight;
-        OGL.heightOffset = 0;
+    GetClientRect(hWnd, &windowRect);
 
-        SetWindowPos(hWnd, NULL, 0, 0, OGL.width, OGL.height, SWP_NOACTIVATE | SWP_NOZORDER | SWP_SHOWWINDOW);
-    }
+    if (hStatusBar)
+        GetWindowRect(hStatusBar, &statusRect);
     else
-    {
-        OGL.width = OGL.windowedWidth;
-        OGL.height = OGL.windowedHeight;
+        statusRect.bottom = statusRect.top = 0;
 
-        GetClientRect(hWnd, &windowRect);
+    if (hToolBar)
+        GetWindowRect(hToolBar, &toolRect);
+    else
+        toolRect.bottom = toolRect.top = 0;
 
-        if (hStatusBar)
-            GetWindowRect(hStatusBar, &statusRect);
-        else
-            statusRect.bottom = statusRect.top = 0;
+    OGL.heightOffset = (statusRect.bottom - statusRect.top);
+    windowRect.right = windowRect.left + OGL.windowedWidth - 1;
+    windowRect.bottom = windowRect.top + OGL.windowedHeight - 1 + OGL.heightOffset;
 
-        if (hToolBar)
-            GetWindowRect(hToolBar, &toolRect);
-        else
-            toolRect.bottom = toolRect.top = 0;
+    AdjustWindowRect(&windowRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != NULL);
 
-        OGL.heightOffset = (statusRect.bottom - statusRect.top);
-        windowRect.right = windowRect.left + OGL.windowedWidth - 1;
-        windowRect.bottom = windowRect.top + OGL.windowedHeight - 1 + OGL.heightOffset;
-
-        AdjustWindowRect(&windowRect, GetWindowLong(hWnd, GWL_STYLE), GetMenu(hWnd) != NULL);
-
-        SetWindowPos(hWnd, NULL, 0, 0, windowRect.right - windowRect.left + 1,
-                     windowRect.bottom - windowRect.top + 1 + toolRect.bottom - toolRect.top + 1, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
-    }
+    SetWindowPos(hWnd, NULL, 0, 0, windowRect.right - windowRect.left + 1,
+                 windowRect.bottom - windowRect.top + 1 + toolRect.bottom - toolRect.top + 1, SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
 }
 
 bool OGL_InitContext()
